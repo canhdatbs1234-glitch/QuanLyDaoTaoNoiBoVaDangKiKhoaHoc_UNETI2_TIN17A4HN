@@ -3,9 +3,9 @@
 // Nội dung thực hiện: DbContext, DbSet, cấu hình quan hệ và chỉ mục (Fluent API).
 
 using Microsoft.EntityFrameworkCore;
-using QuanLyDaoTaoNoiBo_UNETI2_TI17A1HN.Models;
+using QuanLyDaoTaoNoiBo_UNETI2_TI17A4HN.Models;
 
-namespace QuanLyDaoTaoNoiBo_UNETI2_TI17A1HN.Data;
+namespace QuanLyDaoTaoNoiBo_UNETI2_TI17A4HN.Data;
 
 public class ApplicationDbContext : DbContext
 {

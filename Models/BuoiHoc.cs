@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace QuanLyDaoTaoNoiBo_UNETI17_TI17A1HN.Models
+namespace QuanLyDaoTaoNoiBo_UNETI2_TI17A4HN.Models
 {
     public class BuoiHoc
     {
