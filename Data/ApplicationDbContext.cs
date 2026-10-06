@@ -1,6 +1,6 @@
-// Họ và tên: [Cả nhóm / nhóm trưởng - điền họ tên]
-// Mã sinh viên: [điền MSSV]
-// Nội dung thực hiện: DbContext, DbSet, cấu hình quan hệ và chỉ mục (Fluent API).
+// Họ và tên: [Nguyễn Cảnh Đạt]
+// Mã sinh viên: [23103100224]
+// Nội dung thực hiện: DbContext lấy dữ liệu từ cơ sở dữ liệu.
 
 using Microsoft.EntityFrameworkCore;
 using QuanLyDaoTaoNoiBo_UNETI2_TI17A1HN.Models;
