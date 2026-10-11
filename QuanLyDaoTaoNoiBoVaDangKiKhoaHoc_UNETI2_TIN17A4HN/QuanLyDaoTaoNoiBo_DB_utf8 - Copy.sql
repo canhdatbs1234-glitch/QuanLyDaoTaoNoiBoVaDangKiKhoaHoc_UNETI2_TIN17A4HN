@@ -1,6 +1,6 @@
 ﻿USE [QuanLyDaoTaoNoiBo_DB]
 GO
-/****** Object:  Table [dbo].[__EFMigrationsHistory]    Script Date: 10/8/2026 10:23:47 PM ******/
+/***** Object:  Table [dbo].[__EFMigrationsHistory]    Script Date: 10/8/2026 10:23:47 PM *****/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

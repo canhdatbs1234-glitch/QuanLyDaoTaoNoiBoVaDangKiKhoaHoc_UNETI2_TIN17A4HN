@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using QuanLyDaoTaoNoiBo.Models.Entities;
+using QuanLyDaoTaoNoiBoVaDangKiKhoaHoc_UNETI2_TIN17A4HN.Models;
 
-namespace QuanLyDaoTaoNoiBo.Data;
+namespace QuanLyDaoTaoNoiBoVaDangKiKhoaHoc_UNETI2_TIN17A4HN.Data;
 
 public partial class ApplicationDbContext : DbContext
 {

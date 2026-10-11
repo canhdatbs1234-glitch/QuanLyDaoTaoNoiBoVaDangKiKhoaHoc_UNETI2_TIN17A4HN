@@ -2,10 +2,9 @@
 using System.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using QuanLyDaoTaoNoiBo.Models.Entities;
+using QuanLyDaoTaoNoiBoVaDangKiKhoaHoc_UNETI2_TIN17A4HN.Models.Entities;
 
-namespace QuanLyDaoTaoNoiBo.Data;
-
+namespace QuanLyDaoTaoNoiBoVaDangKiKhoaHoc_UNETI2_TIN17A4HN.Data;
 public static class DbInitializer
 {
     public static void Initialize(ApplicationDbContext context)

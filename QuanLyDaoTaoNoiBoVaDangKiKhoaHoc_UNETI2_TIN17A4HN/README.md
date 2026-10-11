@@ -2,7 +2,7 @@
 
 Ứng dụng ASP.NET Core 10 dùng Entity Framework Core SQL Server 10.0.8, gồm 10 Entity, `ApplicationDbContext`, seed mẫu, portal UNETI và đầy đủ Modules 1–5: đăng nhập, quản lý đào tạo, đăng ký, điểm danh, đánh giá và thống kê. Đường dẫn `/` mở trang đăng nhập.
 
-## Chạy ứng dụng
+## Chạy ứngdụng
 
 `appsettings.json` đã cấu hình `DefaultConnection`:
 

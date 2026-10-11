@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace QuanLyDaoTaoNoiBo.Migrations
+namespace QuanLyDaoTaoNoiBoVaDangKiKhoaHoc_UNETI2_TIN17A4HN.Migrations
 {
     /// <inheritdoc />
     public partial class AddGiangVienToLopDaoTao : Migration
