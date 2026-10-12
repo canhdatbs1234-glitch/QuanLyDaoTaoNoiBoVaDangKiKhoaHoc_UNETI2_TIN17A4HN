@@ -1,1 +1,12 @@
-1
+1@*
+// Họ và tên: Phí Bảo Nam
+// Mã sinh viên: 23103100236
+// Nội dung thực hiện: Module 3 - Nhân viên, Đăng ký và Duyệt đào tạo
+*@
+@model QuanLyDaoTaoNoiBo.Models.Entities.NhanVien
+@{ ViewData["Title"] = "Chi tiết nhân viên"; }
+<p class="eyebrow navy">NHÂN SỰ / HỒ SƠ</p><h1>@Model.HoTen</h1><partial name="_Module2Messages" />
+<section class="editor-panel"><dl class="detail-grid"><dt>Tài khoản</dt><dd>@Model.TaiKhoan.TenDangNhap</dd><dt>Phòng ban</dt><dd>@Model.PhongBan.TenPhongBan</dd><dt>Ngày sinh</dt><dd>@Model.NgaySinh.ToString("dd/MM/yyyy")</dd><dt>Ngày vào làm</dt><dd>@Model.NgayVaoLam.ToString("dd/MM/yyyy")</dd><dt>Email</dt><dd>@Model.Email</dd><dt>Điện thoại</dt><dd>@(Model.SoDienThoai ?? "Chưa cập nhật")</dd><dt>Trạng thái</dt><dd>@(Model.TrangThai ? "Hoạt động" : "Ngừng hoạt động")</dd></dl>
+<div class="actions"><a class="primary-button" asp-action="Edit" asp-route-id="@Model.MaNhanVien">Chỉnh sửa</a><a class="secondary-button" asp-action="Index">Quay lại</a></div></section>
+<section class="delete-panel"><h2>Xóa nhân viên</h2><p>Không xóa hồ sơ đã có đăng ký hoặc điểm danh. Xóa hồ sơ không xóa tài khoản liên kết.</p><form asp-action="Delete" asp-route-id="@Model.MaNhanVien" method="post"><label class="confirm-delete"><input type="checkbox" required /> Tôi xác nhận xóa hồ sơ này, thao tác không thể hoàn tác.</label><button class="danger-button" type="submit">Xóa nhân viên</button></form></section>
+

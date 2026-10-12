@@ -1,1 +1,20 @@
-1
+1@*
+// Họ và tên: Phí Bảo Nam
+// Mã sinh viên: 23103100236
+// Nội dung thực hiện: Module 3 - Nhân viên, Đăng ký và Duyệt đào tạo
+*@
+@model NhanVienViewModel
+<div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+<div class="form-grid">
+<div class="field"><label asp-for="HoTen"></label><input asp-for="HoTen" /><span asp-validation-for="HoTen" class="field-error"></span></div>
+<div class="field"><label asp-for="MaTaiKhoan"></label><select asp-for="MaTaiKhoan" asp-items="Model.TaiKhoans"><option value="">Chọn tài khoản chưa liên kết</option></select><span asp-validation-for="MaTaiKhoan" class="field-error"></span></div>
+<div class="field"><label asp-for="MaPhongBan"></label><select asp-for="MaPhongBan" asp-items="Model.PhongBans"><option value="">Chọn phòng ban</option></select><span asp-validation-for="MaPhongBan" class="field-error"></span></div>
+<div class="field"><label asp-for="NgaySinh"></label><input asp-for="NgaySinh" type="date"/><span asp-validation-for="NgaySinh" class="field-error"></span></div>
+<div class="field"><label asp-for="NgayVaoLam"></label><input asp-for="NgayVaoLam" type="date"/><span asp-validation-for="NgayVaoLam" class="field-error"></span></div>
+<div class="field"><label asp-for="SoDienThoai"></label><input asp-for="SoDienThoai" /><span asp-validation-for="SoDienThoai" class="field-error"></span></div>
+<div class="field"><label asp-for="Email"></label><input asp-for="Email" type="email"/><span asp-validation-for="Email" class="field-error"></span></div>
+<div class="field"><label asp-for="TrangThai"></label><input asp-for="TrangThai" /><span asp-validation-for="TrangThai" class="field-error"></span></div>
+</div>
+<p class="muted">Chọn tài khoản đã được cấp. Một tài khoản chỉ liên kết với một nhân viên. Họ tên/email hồ sơ nhân viên được quản lý riêng với thông tin tài khoản.</p>
+<div class="actions"><button class="primary-button" type="submit">Lưu nhân viên</button><a class="secondary-button" asp-action="Index">Quay lại</a></div>
+
