@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyDaoTaoNoiBo.Data;
 using QuanLyDaoTaoNoiBo.Filters;
-using QuanLyDaoTaoNoiBoVaDangKiKhoaHoc_UNETI2_TIN17A4HN.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

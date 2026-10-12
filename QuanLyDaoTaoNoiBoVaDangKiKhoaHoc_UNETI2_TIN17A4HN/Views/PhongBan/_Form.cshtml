@@ -1,0 +1,15 @@
+@*
+//Họ và tên: Nguyễn Cảnh Đạt
+//Mã sinh viên: 23103100224
+//Module 1: Tài khoản – Đăng nhập – Phân quyền – Phòng ban – Lĩnh vực đào tạo.
+*@
+@model PhongBanViewModel
+<div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+<input type="hidden" asp-for="MaPhongBan" />
+<div class="form-grid">
+<div class="field"><label asp-for="TenPhongBan"></label><input asp-for="TenPhongBan" maxlength="150" /><span asp-validation-for="TenPhongBan" class="field-error"></span></div>
+<div class="field"><label asp-for="MoTa"></label><textarea asp-for="MoTa" rows="3" maxlength="1000"></textarea><span asp-validation-for="MoTa" class="field-error"></span></div>
+<div class="field"><label asp-for="TrangThai"></label><input asp-for="TrangThai" /><span asp-validation-for="TrangThai" class="field-error"></span></div>
+</div>
+<p class="muted">Tên phòng ban là bắt buộc và không được trùng. Phòng ban ngừng hoạt động sẽ không được gán cho nhân viên mới.</p>
+<div class="actions"><button class="primary-button" type="submit">Lưu phòng ban</button><a class="secondary-button" asp-action="Index">Quay lại</a></div>

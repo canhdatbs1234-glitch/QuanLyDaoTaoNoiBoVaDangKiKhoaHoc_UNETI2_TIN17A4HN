@@ -1,17 +1,21 @@
-
 using System.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using QuanLyDaoTaoNoiBoVaDangKiKhoaHoc_UNETI2_TIN17A4HN.Models.Entities;
+using QuanLyDaoTaoNoiBo.Models.Entities;
 
-namespace QuanLyDaoTaoNoiBoVaDangKiKhoaHoc_UNETI2_TIN17A4HN.Data;
+namespace QuanLyDaoTaoNoiBo.Data;
+
 public static class DbInitializer
 {
     public static void Initialize(ApplicationDbContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
+
+        // Làm sạch dữ liệu cũ và cập nhật lại
         context.Database.EnsureDeleted();
         context.Database.Migrate();
+
+        // Toàn bộ dữ liệu mẫu được ghi trong cùng một transaction.
         using var transaction = context.Database.BeginTransaction(IsolationLevel.Serializable);
 
         var phongBanMau = new[]
@@ -40,6 +44,8 @@ public static class DbInitializer
                 context.LinhVucDaoTaos.Add(new LinhVucDaoTao { TenLinhVuc = item.Ten, MoTa = item.MoTa });
         }
         context.SaveChanges();
+
+        // Thêm Admin
         var admin = GetOrCreateAccount(context, "admin", "Admin@123", "Quản trị viên UNETI",
             "admin@uneti.example", "QuanTri");
         context.SaveChanges();
@@ -48,8 +54,10 @@ public static class DbInitializer
         {
             context.NhanViens.Add(new NhanVien
             {
-                TaiKhoan = admin, PhongBan = phongCNTT,
-                HoTen = admin.HoTen, Email = admin.Email,
+                TaiKhoan = admin,
+                PhongBan = phongCNTT,
+                HoTen = admin.HoTen,
+                Email = admin.Email,
                 NgaySinh = new DateOnly(1990, 5, 15),
                 NgayVaoLam = new DateOnly(2020, 9, 1)
             });
@@ -58,6 +66,8 @@ public static class DbInitializer
 
         var random = new Random(42);
         var danhSachPhongBan = context.PhongBans.ToList();
+
+        // Thêm 10 Giảng viên
         var giangViens = new List<TaiKhoan>();
         var hoVaTenLot = new[] { "Nguyễn Văn", "Trần Thị", "Lê Hoàng", "Phạm Thu", "Hoàng Minh", "Đặng Thùy", "Vũ Quốc", "Bùi Thanh", "Đỗ Ngọc", "Ngô Gia" };
         var ten = new[] { "An", "Bình", "Châu", "Dung", "Hùng", "Hoa", "Khánh", "Linh", "Minh", "Nga" };
@@ -76,8 +86,10 @@ public static class DbInitializer
             {
                 context.NhanViens.Add(new NhanVien
                 {
-                    TaiKhoan = gv, PhongBan = danhSachPhongBan[random.Next(danhSachPhongBan.Count)],
-                    HoTen = gv.HoTen, Email = gv.Email,
+                    TaiKhoan = gv,
+                    PhongBan = danhSachPhongBan[random.Next(danhSachPhongBan.Count)],
+                    HoTen = gv.HoTen,
+                    Email = gv.Email,
                     NgaySinh = new DateOnly(1975 + random.Next(20), random.Next(1, 13), random.Next(1, 28)),
                     NgayVaoLam = new DateOnly(2022, random.Next(1, 13), random.Next(1, 28))
                 });
@@ -85,6 +97,7 @@ public static class DbInitializer
         }
         context.SaveChanges();
 
+        // Thêm 50 Nhân viên
         var nhanViens = new List<TaiKhoan>();
         for (int i = 1; i <= 50; i++)
         {
@@ -100,8 +113,10 @@ public static class DbInitializer
             {
                 context.NhanViens.Add(new NhanVien
                 {
-                    TaiKhoan = nv, PhongBan = danhSachPhongBan[random.Next(danhSachPhongBan.Count)],
-                    HoTen = nv.HoTen, Email = nv.Email,
+                    TaiKhoan = nv,
+                    PhongBan = danhSachPhongBan[random.Next(danhSachPhongBan.Count)],
+                    HoTen = nv.HoTen,
+                    Email = nv.Email,
                     NgaySinh = new DateOnly(1990 + random.Next(10), random.Next(1, 13), random.Next(1, 28)),
                     NgayVaoLam = new DateOnly(2022, random.Next(1, 13), random.Next(1, 28))
                 });
@@ -117,8 +132,9 @@ public static class DbInitializer
             "Thực hành giao tiếp hiệu quả và phối hợp nhóm trong công việc.", 12m);
         context.SaveChanges();
 
+        // Tính ngày theo Việt Nam
         var homNay = DateOnly.FromDateTime(DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(7)).DateTime);
-        
+
         for (int i = 1; i <= 25; i++)
         {
             var khoa = (i % 2 == 0) ? khoaLapTrinh : khoaKyNang;
@@ -129,14 +145,16 @@ public static class DbInitializer
         }
         context.SaveChanges();
 
+        // Lấy ra lớp và nhân viên (đã lưu)
         var lopDaLuu = context.LopDaoTaos.ToList();
         var nhanVienDaLuu = context.NhanViens.Where(x => x.TaiKhoan.VaiTro == "NhanVien").ToList();
-        
+
         foreach (var nv in nhanVienDaLuu)
         {
+            // Mỗi nhân viên đăng ký ngẫu nhiên 3-8 lớp
             int soLopDangKy = random.Next(3, 9);
             var lopDangKy = lopDaLuu.OrderBy(x => random.Next()).Take(soLopDangKy).ToList();
-            
+
             foreach (var lop in lopDangKy)
             {
                 if (!context.DangKyDaoTaos.Any(x => x.MaLop == lop.MaLop && x.MaNhanVien == nv.MaNhanVien))
@@ -161,11 +179,14 @@ public static class DbInitializer
     {
         var existing = context.TaiKhoans.SingleOrDefault(x => x.TenDangNhap == username);
         if (existing is not null)
-            return existing; 
+            return existing; // Không ghi đè mật khẩu, vai trò hay thông tin đã sửa.
 
         var account = new TaiKhoan
         {
-            TenDangNhap = username, HoTen = fullName, Email = email, VaiTro = role
+            TenDangNhap = username,
+            HoTen = fullName,
+            Email = email,
+            VaiTro = role
         };
         account.MatKhau = password;
         context.TaiKhoans.Add(account);
@@ -182,8 +203,12 @@ public static class DbInitializer
 
         var course = new KhoaDaoTao
         {
-            TenKhoaDaoTao = name, LinhVucDaoTao = field, MoTa = description,
-            SoGioDuKien = hours, DiemDatToiThieu = 5m, TyLeThamDuToiThieu = 80m
+            TenKhoaDaoTao = name,
+            LinhVucDaoTao = field,
+            MoTa = description,
+            SoGioDuKien = hours,
+            DiemDatToiThieu = 5m,
+            TyLeThamDuToiThieu = 80m
         };
         context.KhoaDaoTaos.Add(course);
         return course;
@@ -197,10 +222,14 @@ public static class DbInitializer
 
         context.LopDaoTaos.Add(new LopDaoTao
         {
-            KhoaDaoTao = course, TenLop = name,
-            NgayBatDau = start, NgayKetThuc = end,
+            KhoaDaoTao = course,
+            TenLop = name,
+            NgayBatDau = start,
+            NgayKetThuc = end,
             HanDangKy = start.AddDays(-1).ToDateTime(new TimeOnly(23, 59, 59)),
-            SoLuongToiDa = capacity, DiaDiem = location, TrangThai = "MoDangKy",
+            SoLuongToiDa = capacity,
+            DiaDiem = location,
+            TrangThai = "MoDangKy",
             MaGiangVien = maGiangVien
         });
     }

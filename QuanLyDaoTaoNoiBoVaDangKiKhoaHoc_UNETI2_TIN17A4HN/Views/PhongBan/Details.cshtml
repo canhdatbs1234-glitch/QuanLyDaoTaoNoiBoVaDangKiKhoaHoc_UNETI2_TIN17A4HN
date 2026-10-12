@@ -1,0 +1,11 @@
+@*
+//Họ và tên: Nguyễn Cảnh Đạt
+//Mã sinh viên: 23103100224
+//Module 1: Tài khoản – Đăng nhập – Phân quyền – Phòng ban – Lĩnh vực đào tạo.
+*@
+@model QuanLyDaoTaoNoiBo.Models.Entities.PhongBan
+@{ ViewData["Title"] = "Chi tiết phòng ban"; }
+<p class="eyebrow navy">Nhân viên</p><h1>@Model.TenPhongBan</h1><partial name="_Module2Messages" />
+<section class="editor-panel"><dl class="detail-grid"><dt>Mô tả</dt><dd>@(Model.MoTa ?? "Chưa có mô tả")</dd><dt>Trạng thái</dt><dd>@(Model.TrangThai ? "Hoạt động" : "Ngừng hoạt động")</dd><dt>Phòng ban ngừng hoạt động sẽ không được gán cho nhân viên mới. liên quan</dt><dd>@ViewData["SoLuongLienQuan"]</dd></dl>
+<div class="actions"><a class="primary-button" asp-action="Edit" asp-route-id="@Model.MaPhongBan">Chỉnh sửa</a><a class="secondary-button" asp-action="Index">Quay lại</a></div></section>
+<section class="delete-panel"><h2>Xóa phòng ban</h2><p>Chỉ xóa được khi chưa có dữ liệu liên quan. Nếu đã được sử dụng, hãy bỏ chọn "Đang hoạt động" ở trang chỉnh sửa để giữ lịch sử.</p><form asp-action="Delete" asp-route-id="@Model.MaPhongBan" method="post"><label class="confirm-delete"><input type="checkbox" required /> Tôi xác nhận xóa phòng ban này, thao tác không thể hoàn tác.</label><button class="danger-button" type="submit">Xóa phòng ban</button></form></section>

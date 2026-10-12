@@ -1,1 +1,27 @@
-1
+@* Họ và tên: Nguyễn Cảnh Đạt
+Mã sinh viên: 23103100224
+Module 1: Tài khoản – Đăng nhập – Phân quyền – Phòng ban – Lĩnh vực đào tạo. *@
+@model DangNhapViewModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+<section class="login-card" aria-labelledby="login-heading">
+    <div class="login-intro">
+        <span class="eyebrow">UNETI / CỔNG ĐÀO TẠO NỘI BỘ</span>
+        <div class="intro-content"><span class="intro-rule"></span><h1>Kết nối tri thức.<br />Phát triển tương lai.</h1><p>Không gian học tập dành cho đội ngũ cán bộ, nhân viên Trường Đại học Kinh tế - Kỹ thuật Công nghiệp.</p></div>
+        <div class="intro-bottom"><span>01</span><p>Học tập chủ động<br /><strong>Phát triển bền vững</strong></p></div>
+    </div>
+    <div class="login-form-panel">
+        <img class="login-logo" src="~/images/uneti-mark.svg" alt="Biểu trưng chữ UNETI" width="76" height="76" />
+        <p class="eyebrow navy">CHÀO MỪNG BẠN TRỞ LẠI</p>
+        <h2 id="login-heading">Đăng nhập hệ thống</h2>
+        <p class="muted">Sử dụng tài khoản nội bộ để bắt đầu.</p>
+        <form asp-controller="TaiKhoan" asp-action="DangNhap" method="post" class="login-form">
+            <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
+            <div class="field"><label asp-for="TenDangNhap"></label><input asp-for="TenDangNhap" autocomplete="username" placeholder="Nhập tên đăng nhập" required maxlength="50" aria-describedby="username-error" /><span id="username-error" asp-validation-for="TenDangNhap" class="field-error"></span></div>
+            <div class="field"><label asp-for="MatKhau"></label><input asp-for="MatKhau" type="password" autocomplete="current-password" spellcheck="false" autocapitalize="none" placeholder="Nhập mật khẩu" required maxlength="500" aria-describedby="password-error" /><span id="password-error" asp-validation-for="MatKhau" class="field-error"></span></div>
+            <button class="primary-button" type="submit">Đăng nhập <span aria-hidden="true">→</span></button>
+        </form>
+        <div class="login-help"><strong>Cần hỗ trợ tài khoản?</strong><p>Vui lòng liên hệ quản trị viên hệ thống để được cấp lại thông tin đăng nhập.</p></div>
+    </div>
+</section>

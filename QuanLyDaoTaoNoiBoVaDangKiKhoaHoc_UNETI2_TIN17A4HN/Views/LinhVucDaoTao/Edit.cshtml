@@ -1,0 +1,9 @@
+@*
+//Họ và tên: Nguyễn Cảnh Đạt
+//Mã sinh viên: 23103100224
+//Module 1: Tài khoản – Đăng nhập – Phân quyền – Phòng ban – Lĩnh vực đào tạo.
+*@
+@model LinhVucDaoTaoViewModel
+@{ ViewData["Title"] = "Sửa lĩnh vực"; }
+<p class="eyebrow navy">Khóa đào tạo</p><h1>@ViewData["Title"]</h1>
+<section class="editor-panel"><form asp-action="Edit" asp-route-id="@Model.MaLinhVuc" method="post"><partial name="_Form" model="Model" /></form></section>

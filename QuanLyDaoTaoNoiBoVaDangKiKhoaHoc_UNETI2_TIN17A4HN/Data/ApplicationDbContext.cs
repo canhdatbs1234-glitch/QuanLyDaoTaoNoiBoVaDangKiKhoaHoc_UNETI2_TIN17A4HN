@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using QuanLyDaoTaoNoiBoVaDangKiKhoaHoc_UNETI2_TIN17A4HN.Models;
+using QuanLyDaoTaoNoiBo.Models.Entities;
 
-namespace QuanLyDaoTaoNoiBoVaDangKiKhoaHoc_UNETI2_TIN17A4HN.Data;
+namespace QuanLyDaoTaoNoiBo.Data;
 
 public partial class ApplicationDbContext : DbContext
 {
@@ -33,8 +33,16 @@ public partial class ApplicationDbContext : DbContext
             entity.HasIndex(x => x.Email).IsUnique();
         });
 
-        modelBuilder.Entity<PhongBan>().ToTable("PhongBan");
-        modelBuilder.Entity<LinhVucDaoTao>().ToTable("LinhVucDaoTao");
+        modelBuilder.Entity<PhongBan>(entity =>
+        {
+            entity.ToTable("PhongBan");
+            entity.HasIndex(x => x.TenPhongBan).IsUnique();
+        });
+        modelBuilder.Entity<LinhVucDaoTao>(entity =>
+        {
+            entity.ToTable("LinhVucDaoTao");
+            entity.HasIndex(x => x.TenLinhVuc).IsUnique();
+        });
 
         modelBuilder.Entity<NhanVien>(entity =>
         {
@@ -43,6 +51,8 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(x => x.NgaySinh).HasColumnType("date");
             entity.Property(x => x.NgayVaoLam).HasColumnType("date");
             entity.HasIndex(x => x.MaTaiKhoan).IsUnique();
+
+            // Tài khoản có 0 hoặc 1 nhân viên; mỗi nhân viên có đúng 1 tài khoản.
             entity.HasOne(x => x.TaiKhoan).WithOne(x => x.NhanVien)
                 .HasForeignKey<NhanVien>(x => x.MaTaiKhoan)
                 .OnDelete(DeleteBehavior.NoAction);

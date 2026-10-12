@@ -1,7 +1,8 @@
+//Họ và tên: Nguyễn Cảnh Đạt
+//Mã sinh viên: 23103100224
+//Module 1: Tài khoản – Đăng nhập – Phân quyền – Phòng ban – Lĩnh vực đào tạo.
 using System.ComponentModel.DataAnnotations;
-
 namespace QuanLyDaoTaoNoiBo.Models.Entities;
-
 public class TaiKhoan
 {
     [Key]
@@ -19,7 +20,7 @@ public class TaiKhoan
     public string Email { get; set; } = string.Empty;
 
     [Required, StringLength(30)]
-    [RegularExpression("^(QuanTri|QuanLy|NhanVien)$")]
+    [RegularExpression("^(QuanTri|QuanLy|NhanVien|GiangVien)$")]
     public string VaiTro { get; set; } = "NhanVien";
 
     [Required]
