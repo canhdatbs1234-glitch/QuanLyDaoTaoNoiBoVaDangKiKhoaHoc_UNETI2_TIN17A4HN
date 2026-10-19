@@ -1,1 +1,85 @@
-1
+@*
+//Họ và tên: Trần Trung Hiếu
+//Mã sinh viên: 23103100217
+//Module 2
+*@
+@model LopDaoTaoListViewModel
+@{
+    ViewData["Title"] = "Lớp đào tạo";
+}
+<div class="section-heading"><div><p class="eyebrow navy">QUẢN LÝ ĐÀO TẠO</p><h1>Danh sách lớp đào tạo</h1><p class="muted">Tìm lớp theo chương trình, lịch học và số chỗ còn.</p></div><a class="primary-button" asp-action="Create">+ Thêm lớp</a></div>
+<partial name="_Module2Messages" />
+<form asp-action="Index" method="get" class="filter-panel">
+    <h2 class="filter-title">Tìm kiếm</h2>
+    <div class="search-row">
+        <div class="field search-field"><label asp-for="SearchTerm">Tìm kiếm</label><input asp-for="SearchTerm" placeholder="Tên khóa, tên lớp, lĩnh vực hoặc địa điểm" /></div>
+        <div class="actions"><button type="submit" class="primary-button">Tìm kiếm</button></div>
+    </div>
+    <h2 class="filter-title">Bộ lọc và sắp xếp</h2>
+    <div class="filter-grid">
+        <div class="field"><label asp-for="MaLinhVuc">Lĩnh vực</label><select asp-for="MaLinhVuc" asp-items="Model.LinhVucs"><option value="">Tất cả lĩnh vực</option></select></div>
+        <div class="field">
+            <label asp-for="TrangThai">Trạng thái lớp</label><select asp-for="TrangThai">
+            <option value="">Tất cả trạng thái</option>
+            @foreach (var status in LopDaoTaoViewModel.TrangThais)
+            {
+                <option value="@status.Key">@status.Value</option>
+            }
+        </select>
+    </div>
+    <div class="field"><label asp-for="TuNgay">Ngày bắt đầu từ</label><input asp-for="TuNgay" type="date" asp-format="{0:yyyy-MM-dd}" /></div>
+    <div class="field"><label asp-for="DenNgay">Ngày bắt đầu đến</label><input asp-for="DenNgay" type="date" asp-format="{0:yyyy-MM-dd}" /></div>
+    <div class="field"><label asp-for="TinhTrangCho">Chỗ trống</label><select asp-for="TinhTrangCho"><option value="">Tất cả</option><option value="con">Còn chỗ</option><option value="het">Hết chỗ</option></select></div>
+    <div class="field"><label asp-for="TinhTrangHan">Hạn đăng ký</label><select asp-for="TinhTrangHan"><option value="">Tất cả</option><option value="con">Còn hạn đăng ký</option><option value="het">Hết hạn đăng ký</option></select></div>
+    <div class="field">
+        <label asp-for="SortOrder">Sắp xếp</label><select asp-for="SortOrder">
+        @foreach (var option in LopDaoTaoListViewModel.SortOptions)
+        {
+            <option value="@option.Key">@option.Value</option>
+        }
+    </select>
+</div>
+</div>
+<div class="actions"><button type="submit" class="primary-button">Lọc</button><a class="secondary-button" asp-action="Index">Xóa tìm kiếm và bộ lọc</a></div>
+</form>
+<p class="muted">@Model.TotalCount kết quả · @(Model.TotalPages == 0 ? "Chưa có trang" : $"Trang {Model.PageIndex}/{Model.TotalPages}") · @Model.PageSize lớp/trang</p>
+<div class="table-panel m2-table">
+    <table class="data-table">
+        <thead><tr><th>Lớp / Khóa đào tạo</th><th>Lĩnh vực</th><th>Thời gian</th><th>Địa điểm</th><th>Giảng viên</th><th>Trạng thái</th><th>Chỗ còn / Tối đa</th><th>Thao tác</th></tr></thead>
+        <tbody>
+            @foreach (var item in Model.Lops)
+            {
+                <tr><td><a asp-action="Details" asp-route-id="@item.MaLop">@item.TenLop</a><small>@item.TenKhoaDaoTao</small></td><td>@item.TenLinhVuc</td><td>@item.NgayBatDau.ToString("dd/MM/yyyy")<small>đến @item.NgayKetThuc.ToString("dd/MM/yyyy")</small></td><td>@item.DiaDiem</td><td><small>@(string.IsNullOrEmpty(item.TenGiangVien) ? "Chưa phân công" : item.TenGiangVien)</small></td><td><span class="status-badge @item.TrangThaiCss">@item.TenTrangThai</span></td><td><strong class="@(item.SoChoCon > 0 ? "seats-available" : "seats-full")">@item.SoChoCon / @item.SoLuongToiDa</strong><small>@item.SoDaDuyet đã duyệt</small></td><td class="row-actions"><a asp-action="Edit" asp-route-id="@item.MaLop">Sửa</a><a asp-action="Details" asp-route-id="@item.MaLop">Chi tiết / Xóa</a></td></tr>
+            }
+            @if (Model.Lops.Count == 0)
+            {
+                <tr><td colspan="8" class="table-empty">Không tìm thấy lớp phù hợp. Hãy thử thay đổi bộ lọc.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+@if (Model.TotalPages > 1)
+{
+    <nav class="pagination" aria-label="Phân trang danh sách lớp">
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="Index" asp-all-route-data="Model.RouteForPage(1)">Đầu</a><a asp-action="Index" asp-all-route-data="Model.RouteForPage(Model.PageIndex - 1)">← Trước</a>
+        }
+        @for (var page = Math.Max(1, Model.PageIndex - 2); page <= Math.Min(Model.TotalPages, Model.PageIndex + 2); page++)
+        {
+            if (page == Model.PageIndex)
+            {
+                <span class="current" aria-current="page">@(page)</span>
+            }
+            else
+            {
+
+                <a asp-action="Index" asp-all-route-data="Model.RouteForPage(page)">@(page)</a>
+            }
+        }
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="Index" asp-all-route-data="Model.RouteForPage(Model.PageIndex + 1)">Sau →</a><a asp-action="Index" asp-all-route-data="Model.RouteForPage(Model.TotalPages)">Cuối</a>
+        }
+    </nav>
+}

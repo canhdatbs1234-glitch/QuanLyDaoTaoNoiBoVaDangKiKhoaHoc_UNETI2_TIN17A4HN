@@ -1,1 +1,42 @@
-1
+@*
+//Họ và tên: Trần Trung Hiếu
+//Mã sinh viên: 23103100217
+//Module 2
+*@
+@model LopDaoTaoViewModel
+@{
+    ViewData["Title"] = "Chi tiết lớp đào tạo";
+}
+<p class="eyebrow navy">QUẢN LÝ ĐÀO TẠO / LỚP ĐÀO TẠO</p>
+<h1>@Model.TenLop</h1>
+<partial name="_Module2Messages" />
+<section class="editor-panel">
+    <dl class="detail-grid">
+        <dt>Khóa đào tạo</dt>
+        <dd><a asp-controller="KhoaDaoTao" asp-action="Details" asp-route-id="@Model.MaKhoaDaoTao">@Model.TenKhoaDaoTao →</a></dd>
+        <dt>Lĩnh vực</dt>
+        <dd>@Model.TenLinhVuc</dd>
+        <dt>Ngày bắt đầu</dt>
+        <dd>@Model.NgayBatDau.ToString("dd/MM/yyyy")</dd>
+        <dt>Ngày kết thúc</dt>
+        <dd>@Model.NgayKetThuc.ToString("dd/MM/yyyy")</dd>
+        <dt>Hạn đăng ký</dt>
+        <dd>@Model.HanDangKy.ToString("dd/MM/yyyy HH:mm") (giờ Việt Nam)</dd>
+        <dt>Địa điểm</dt>
+        <dd>@Model.DiaDiem</dd>
+        <dt>Giảng viên phụ trách</dt>
+        <dd>@(string.IsNullOrEmpty(Model.TenGiangVien) ? "Chưa phân công" : Model.TenGiangVien)</dd>
+        <dt>Trạng thái</dt>
+        <dd><span class="status-badge @Model.TrangThaiCss">@Model.TenTrangThai</span></dd>
+        <dt>Số lượng tối đa</dt>
+        <dd>@Model.SoLuongToiDa</dd>
+        <dt>Đã duyệt</dt>
+        <dd>@Model.SoDaDuyet</dd>
+        <dt>Số chỗ còn</dt>
+        <dd><strong>@Model.SoChoCon</strong></dd>
+        <dt>Nhận đăng ký</dt>
+        <dd>@(Model.LyDoKhongNhanDangKy is null ? "Đang nhận đăng ký" : "Không nhận đăng ký: " + Model.LyDoKhongNhanDangKy)</dd>
+    </dl><p class="muted">Chỉ đăng ký ở trạng thái “Đã duyệt” được trừ vào số chỗ còn.</p>
+    <div class="actions"><a class="primary-button" asp-action="Edit" asp-route-id="@Model.MaLop">Chỉnh sửa</a><a class="secondary-button" asp-action="Index">Quay lại</a></div>
+</section>
+<section class="delete-panel"><h2>Xóa lớp đào tạo</h2><p>Chỉ xóa được lớp chưa có đăng ký hoặc buổi học. Thao tác xóa không thể hoàn tác.</p><form asp-action="Delete" asp-route-id="@Model.MaLop" method="post"><label class="confirm-delete"><input type="checkbox" required /> Tôi xác nhận muốn xóa lớp này.</label><button class="danger-button" type="submit">Xóa lớp đào tạo</button></form></section>

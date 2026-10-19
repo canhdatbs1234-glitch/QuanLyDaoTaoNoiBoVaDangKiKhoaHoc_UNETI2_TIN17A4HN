@@ -1,1 +1,17 @@
-1
+@*
+//Họ và tên: Trần Trung Hiếu
+//Mã sinh viên: 23103100217
+//Module 2
+*@
+@model KhoaDaoTaoViewModel
+<div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+<div class="form-grid">
+    <div class="field"><label asp-for="TenKhoaDaoTao"></label><input asp-for="TenKhoaDaoTao" /><span asp-validation-for="TenKhoaDaoTao" class="field-error"></span></div>
+    <div class="field"><label asp-for="MaLinhVuc"></label><select asp-for="MaLinhVuc" asp-items="Model.LinhVucs"><option value="">Chọn lĩnh vực</option></select><span asp-validation-for="MaLinhVuc" class="field-error"></span></div>
+    <div class="field"><label asp-for="SoGioDuKien"></label><input asp-for="SoGioDuKien" type="number" min="0.01" max="9999.99" step="0.01" /><span asp-validation-for="SoGioDuKien" class="field-error"></span></div>
+    <div class="field"><label asp-for="DiemDatToiThieu"></label><input asp-for="DiemDatToiThieu" type="number" min="0" max="10" step="0.01" /><span asp-validation-for="DiemDatToiThieu" class="field-error"></span></div>
+    <div class="field"><label asp-for="TyLeThamDuToiThieu"></label><input asp-for="TyLeThamDuToiThieu" type="number" min="0" max="100" step="0.01" /><span asp-validation-for="TyLeThamDuToiThieu" class="field-error"></span></div>
+    <div class="field"><label asp-for="TrangThai"></label><input asp-for="TrangThai" /></div>
+    <div class="field full-width"><label asp-for="MoTa"></label><textarea asp-for="MoTa" rows="4"></textarea><span asp-validation-for="MoTa" class="field-error"></span></div>
+</div>
+<div class="actions"><button type="submit" class="primary-button">Lưu khóa đào tạo</button><a class="secondary-button" asp-action="Index">Quay lại danh sách</a></div>

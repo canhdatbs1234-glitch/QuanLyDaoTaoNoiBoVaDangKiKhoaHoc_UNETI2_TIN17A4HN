@@ -1,1 +1,16 @@
-1
+@*
+//Họ và tên: Trần Trung Hiếu
+//Mã sinh viên: 23103100217
+//Module 2
+*@
+@model KhoaDaoTaoViewModel
+@{
+    ViewData["Title"] = "Thêm khóa đào tạo";
+}
+<p class="eyebrow navy">QUẢN LÝ ĐÀO TẠO</p>
+<h1>@ViewData["Title"]</h1>
+<section class="editor-panel">
+    <form asp-action="Create" method="post">
+
+        <partial name="_Form" model="Model" />
+    </form></section>

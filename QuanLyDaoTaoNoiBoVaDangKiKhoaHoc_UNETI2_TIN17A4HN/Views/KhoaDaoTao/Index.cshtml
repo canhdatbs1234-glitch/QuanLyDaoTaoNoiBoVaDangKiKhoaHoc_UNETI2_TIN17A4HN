@@ -1,1 +1,72 @@
-1
+@*
+//Họ và tên: Trần Trung Hiếu
+//Mã sinh viên: 23103100217
+//Module 2
+*@
+@model KhoaDaoTaoListViewModel
+@{
+    ViewData["Title"] = "Khóa đào tạo";
+}
+<div class="section-heading"><div><p class="eyebrow navy">QUẢN LÝ ĐÀO TẠO</p><h1>Danh sách khóa đào tạo</h1><p class="muted">Tìm khóa theo tên khóa hoặc lĩnh vực.</p></div><a class="primary-button" asp-action="Create">+ Thêm khóa</a></div>
+<partial name="_Module2Messages" />
+<form asp-action="Index" method="get" class="filter-panel">
+    <h2 class="filter-title">Tìm kiếm</h2>
+    <div class="search-row">
+        <div class="field search-field"><label asp-for="SearchTerm">Tìm kiếm</label><input asp-for="SearchTerm" placeholder="Tên khóa hoặc tên lĩnh vực" /></div>
+        <div class="actions"><button type="submit" class="primary-button">Tìm kiếm</button></div>
+    </div>
+    <h2 class="filter-title">Bộ lọc và sắp xếp</h2>
+    <div class="filter-grid">
+        <div class="field"><label asp-for="MaLinhVuc">Lĩnh vực</label><select asp-for="MaLinhVuc" asp-items="Model.LinhVucs"><option value="">Tất cả lĩnh vực</option></select></div>
+        <div class="field"><label asp-for="TrangThai">Trạng thái</label><select asp-for="TrangThai"><option value="">Tất cả</option><option value="hoatdong">Hoạt động</option><option value="ngung">Ngừng hoạt động</option></select></div>
+        <div class="field">
+            <label asp-for="SortOrder">Sắp xếp</label><select asp-for="SortOrder">
+            @foreach (var option in KhoaDaoTaoListViewModel.SortOptions)
+            {
+                <option value="@option.Key">@option.Value</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="actions"><button type="submit" class="primary-button">Lọc</button><a class="secondary-button" asp-action="Index">Xóa tìm kiếm và bộ lọc</a></div>
+</form>
+<p class="muted">@Model.TotalCount kết quả · @(Model.TotalPages == 0 ? "Chưa có trang" : $"Trang {Model.PageIndex}/{Model.TotalPages}") · @Model.PageSize khóa/trang</p>
+<div class="table-panel m2-table">
+    <table class="data-table">
+        <thead><tr><th>Khóa đào tạo</th><th>Lĩnh vực</th><th>Số giờ</th><th>Điểm đạt</th><th>Tham dự tối thiểu</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+        <tbody>
+            @foreach (var item in Model.Khoas)
+            {
+                <tr><td><a asp-action="Details" asp-route-id="@item.MaKhoaDaoTao">@item.TenKhoaDaoTao</a></td><td>@item.LinhVucDaoTao.TenLinhVuc</td><td>@item.SoGioDuKien.ToString("0.##")</td><td>@item.DiemDatToiThieu.ToString("0.##")</td><td>@item.TyLeThamDuToiThieu.ToString("0.##")%</td><td><span class="status-badge @(item.TrangThai ? "status-on" : "status-off")">@(item.TrangThai ? "Hoạt động" : "Ngừng hoạt động")</span></td><td class="row-actions"><a asp-action="Edit" asp-route-id="@item.MaKhoaDaoTao">Sửa</a><a asp-action="Details" asp-route-id="@item.MaKhoaDaoTao">Chi tiết / Xóa</a></td></tr>
+            }
+            @if (Model.Khoas.Count == 0)
+            {
+                <tr><td colspan="7" class="table-empty">Không tìm thấy khóa phù hợp. Hãy thử thay đổi bộ lọc hoặc chọn “Thêm khóa”.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+@if (Model.TotalPages > 1)
+{
+    <nav class="pagination" aria-label="Phân trang danh sách khóa">
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="Index" asp-all-route-data="Model.RouteForPage(1)">Đầu</a><a asp-action="Index" asp-all-route-data="Model.RouteForPage(Model.PageIndex - 1)">← Trước</a>
+        }
+        @for (var page = Math.Max(1, Model.PageIndex - 2); page <= Math.Min(Model.TotalPages, Model.PageIndex + 2); page++)
+        {
+            if (page == Model.PageIndex)
+            {
+                <span class="current" aria-current="page">@(page)</span>
+            }
+            else
+            {
+                <a asp-action="Index" asp-all-route-data="Model.RouteForPage(page)">@(page)</a>
+            }
+        }
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="Index" asp-all-route-data="Model.RouteForPage(Model.PageIndex + 1)">Sau →</a><a asp-action="Index" asp-all-route-data="Model.RouteForPage(Model.TotalPages)">Cuối</a>
+        }
+    </nav>
+}

@@ -1,1 +1,27 @@
-1
+@*
+//Họ và tên: Trần Trung Hiếu
+//Mã sinh viên: 23103100217
+//Module 2
+*@
+@model LopDaoTaoViewModel
+<div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+<div class="form-grid">
+    <div class="field"><label asp-for="TenLop"></label><input asp-for="TenLop" /><span asp-validation-for="TenLop" class="field-error"></span></div>
+    <div class="field"><label asp-for="MaKhoaDaoTao"></label><select asp-for="MaKhoaDaoTao" asp-items="Model.KhoaDaoTaos"><option value="">Chọn khóa đào tạo</option></select><span asp-validation-for="MaKhoaDaoTao" class="field-error"></span></div>
+    <div class="field"><label asp-for="NgayBatDau"></label><input asp-for="NgayBatDau" type="date" /><span asp-validation-for="NgayBatDau" class="field-error"></span></div>
+    <div class="field"><label asp-for="NgayKetThuc"></label><input asp-for="NgayKetThuc" type="date" /><span asp-validation-for="NgayKetThuc" class="field-error"></span></div>
+    <div class="field"><label asp-for="HanDangKy"></label><input asp-for="HanDangKy" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" /><span asp-validation-for="HanDangKy" class="field-error"></span></div>
+    <div class="field"><label asp-for="SoLuongToiDa"></label><input asp-for="SoLuongToiDa" type="number" min="1" /><span asp-validation-for="SoLuongToiDa" class="field-error"></span></div>
+    <div class="field"><label asp-for="DiaDiem"></label><input asp-for="DiaDiem" /><span asp-validation-for="DiaDiem" class="field-error"></span></div>
+    <div class="field"><label asp-for="MaGiangVien"></label><select asp-for="MaGiangVien" asp-items="Model.GiangViens"><option value="">Chưa phân công</option></select><span asp-validation-for="MaGiangVien" class="field-error"></span></div>
+    <div class="field">
+        <label asp-for="TrangThai"></label><select asp-for="TrangThai">
+        @foreach (var status in LopDaoTaoViewModel.TrangThais)
+        {
+            <option value="@status.Key">@status.Value</option>
+        }
+    </select><span asp-validation-for="TrangThai" class="field-error"></span>
+</div>
+</div>
+<div class="actions"><button type="submit" class="primary-button">Lưu lớp đào tạo</button><a class="secondary-button" asp-action="Index">Quay lại danh sách</a></div>
+

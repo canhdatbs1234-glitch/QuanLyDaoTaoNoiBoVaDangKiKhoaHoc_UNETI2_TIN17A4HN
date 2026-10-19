@@ -1,1 +1,44 @@
-1
+@*
+//Họ và tên: Trần Trung Hiếu
+//Mã sinh viên: 23103100217
+//Module 2
+*@
+@model QuanLyDaoTaoNoiBo.Models.Entities.KhoaDaoTao
+@{
+    ViewData["Title"] = "Chi tiết khóa đào tạo";
+}
+<p class="eyebrow navy">QUẢN LÝ ĐÀO TẠO / KHÓA ĐÀO TẠO</p>
+<h1>@Model.TenKhoaDaoTao</h1>
+<partial name="_Module2Messages" />
+<section class="editor-panel">
+    <dl class="detail-grid">
+        <dt>Lĩnh vực</dt>
+        <dd>@Model.LinhVucDaoTao.TenLinhVuc</dd>
+        <dt>Số giờ dự kiến</dt>
+        <dd>@Model.SoGioDuKien.ToString("0.##") giờ</dd>
+        <dt>Điểm đạt tối thiểu</dt>
+        <dd>@Model.DiemDatToiThieu.ToString("0.##") / 10</dd>
+        <dt>Tỷ lệ tham dự tối thiểu</dt>
+        <dd>@Model.TyLeThamDuToiThieu.ToString("0.##")%</dd>
+        <dt>Trạng thái</dt>
+        <dd><span class="status-badge @(Model.TrangThai ? "status-on" : "status-off")">@(Model.TrangThai ? "Hoạt động" : "Ngừng hoạt động")</span></dd>
+        <dt>Mô tả</dt>
+        <dd class="preserve-lines">@(Model.MoTa ?? "Chưa có mô tả.")</dd>
+    </dl><div class="actions"><a class="primary-button" asp-action="Edit" asp-route-id="@Model.MaKhoaDaoTao">Chỉnh sửa</a><a class="secondary-button" asp-action="Index">Quay lại</a></div>
+</section>
+<section class="editor-panel">
+    <h2>Lớp thuộc khóa (@Model.LopDaoTaos.Count)</h2>
+    @if (!Model.LopDaoTaos.Any())
+    {
+        <p class="muted">Khóa này chưa có lớp.</p>
+    }
+    @foreach (var lop in Model.LopDaoTaos.OrderBy(x => x.NgayBatDau))
+    {
+        <p><a asp-controller="LopDaoTao" asp-action="Details" asp-route-id="@lop.MaLop">@lop.TenLop →</a></p>
+    }
+</section>
+<section class="delete-panel">
+    <h2>Xóa khóa đào tạo</h2><p>Chỉ xóa được khóa chưa có lớp. Thao tác xóa không thể hoàn tác.</p>
+    <form asp-action="Delete" asp-route-id="@Model.MaKhoaDaoTao" method="post"><label class="confirm-delete"><input type="checkbox" required /> Tôi xác nhận muốn xóa khóa này.</label><button type="submit" class="danger-button">Xóa khóa đào tạo</button></form>
+</section>
+
