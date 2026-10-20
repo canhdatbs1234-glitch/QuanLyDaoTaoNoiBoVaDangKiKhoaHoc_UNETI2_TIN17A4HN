@@ -1,3 +1,7 @@
+// Họ và tên: Đàm Quang Huy
+// Mã sinh viên: 23103100197
+// Nội dung thực hiện: Khởi tạo Entity và DbContext
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

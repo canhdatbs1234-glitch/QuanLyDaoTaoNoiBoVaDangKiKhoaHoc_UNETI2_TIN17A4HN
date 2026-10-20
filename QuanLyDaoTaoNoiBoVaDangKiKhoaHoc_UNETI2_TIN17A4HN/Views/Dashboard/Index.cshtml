@@ -1,1 +1,59 @@
-1
+@*
+// Họ và tên: Đàm Quang Huy
+// Mã sinh viên: 23103100197
+// Nội dung thực hiện: Module 5 - Kết quả đào tạo, Lịch sử đào tạo và Dashboard Thống kê
+*@
+@model DashboardViewModel
+@{
+    ViewData["Title"]="Dashboard / Thống kê";
+    var cards=new (string Label,string Value,string Detail)[] {
+        ("Nhân viên hoạt động",Model.TongNhanVienHoatDong.ToString(),"Hồ sơ đang hoạt động"),
+        ("Khóa đang mở",Model.SoKhoaDangMo.ToString(),"Khóa có trạng thái hoạt động"),
+        ("Lớp nhận đăng ký",Model.SoLopDangMo.ToString(),"Còn hạn, chưa bắt đầu"),
+        ("Đăng ký chờ duyệt",Model.DangKyChoDuyet.ToString(),"Yêu cầu đang chờ xử lý"),
+        ("Đăng ký đã duyệt",Model.DangKyDaDuyet.ToString(),"Tổng lượt đã duyệt"),
+        ("Lớp đang học",Model.SoLopDangHoc.ToString(),"Theo ngày bắt đầu/kết thúc"),
+        ("Lớp đã kết thúc",Model.SoLopDaKetThuc.ToString(),"Không gồm lớp đã hủy"),
+        ("Lượt hoàn thành",Model.LuotHoanThanh.ToString(),"Kết quả đã xác nhận"),
+        ("Không hoàn thành",Model.LuotKhongHoanThanh.ToString(),"Kết quả đã xác nhận"),
+        ("Tỷ lệ hoàn thành",Model.TyLeHoanThanh.ToString("0.##")+"%","Trên các kết quả đã xác nhận"),
+        ("Tham dự trung bình",Model.ThongKe.TyLeThamDuTrungBinh.ToString("0.##")+"%","Trên các lượt đã xác nhận")
+    };
+}
+<div class="section-heading"><div><p class="eyebrow navy">UNETI / TỔNG QUAN ĐÀO TẠO</p><h1>Dashboard & Thống kê</h1><p class="muted">Số liệu tổng hợp từ dữ liệu hiện tại của hệ thống.</p></div><a class="primary-button" asp-controller="KetQuaDaoTao" asp-action="DanhGia">Đánh giá kết quả →</a></div>
+<div class="stat-grid">
+@foreach(var card in cards)
+{
+<section class="stat-card"><p>@card.Label</p><strong>@card.Value</strong><small>@card.Detail</small></section>
+}
+</div>
+<div class="notice"><strong>Lớp có nhiều đăng ký nhất</strong>
+@if(Model.ThongKe.LopDongNhat.Count==0){<p>Chưa có đăng ký.</p>}
+else{<p>@string.Join("; ",Model.ThongKe.LopDongNhat.Select(x=>$"{x.TenLop} ({x.SoDangKy} lượt)"))</p>}
+</div>
+<div class="report-grid">
+<section class="editor-panel"><h2>Nhân viên tham gia theo phòng ban</h2><p class="muted">Đếm nhân viên phân biệt có đăng ký đã duyệt, loại lớp bị hủy; dùng phòng ban hiện tại.</p><div class="table-panel"><table class="data-table"><thead><tr><th>Phòng ban</th><th>Nhân viên</th></tr></thead><tbody>
+@foreach(var row in Model.ThongKe.TheoPhongBan){<tr><td>@row.Ten</td><td>@row.SoLuong</td></tr>}
+</tbody></table></div></section>
+<section class="editor-panel"><h2>Đăng ký theo khóa</h2><p class="muted">Tất cả yêu cầu, gồm chờ duyệt, đã duyệt, từ chối và đã hủy.</p><div class="table-panel"><table class="data-table"><thead><tr><th>Khóa</th><th>Số đăng ký</th></tr></thead><tbody>
+@foreach(var row in Model.ThongKe.DangKyTheoKhoa){<tr><td>@row.Ten</td><td>@row.SoLuong</td></tr>}
+</tbody></table></div></section>
+</div>
+<section class="editor-panel"><h2>Đăng ký và kết quả theo lớp</h2><p class="muted">Tỷ lệ hoàn thành và tham dự trung bình chỉ tính kết quả đã xác nhận. Khi chưa có kết quả, hiển thị 0%.</p><div class="table-panel"><table class="data-table"><thead><tr><th>Lớp</th><th>Đăng ký</th><th>Đã duyệt</th><th>Hoàn thành</th><th>Không hoàn thành</th><th>Tỷ lệ hoàn thành</th><th>Tham dự TB</th></tr></thead><tbody>
+@foreach(var row in Model.ThongKe.TheoLop)
+{
+<tr><td>@row.TenLop</td><td>@row.SoDangKy</td><td>@row.SoDaDuyet</td><td>@row.HoanThanh</td><td>@row.KhongHoanThanh</td><td>@row.TyLeHoanThanh.ToString("0.##")%</td><td>@row.TyLeThamDuTrungBinh.ToString("0.##")%</td></tr>
+}
+@if(Model.ThongKe.TheoLop.Count==0){<tr><td colspan="7" class="table-empty">Chưa có lớp đào tạo.</td></tr>}
+</tbody></table></div></section>
+<div class="report-grid">
+<section class="editor-panel"><h2>Lượt đào tạo theo tháng</h2><p class="muted">Đăng ký đã duyệt của lớp không bị hủy, phân kỳ theo ngày bắt đầu lớp.</p><div class="table-panel"><table class="data-table"><thead><tr><th>Tháng / Năm</th><th>Lượt</th></tr></thead><tbody>
+@foreach(var row in Model.ThongKe.TheoThang){<tr><td>@row.Ky.ToString("00")/@row.Nam</td><td>@row.SoLuot</td></tr>}
+@if(Model.ThongKe.TheoThang.Count==0){<tr><td colspan="2">Chưa có dữ liệu.</td></tr>}
+</tbody></table></div></section>
+<section class="editor-panel"><h2>Lượt đào tạo theo quý</h2><p class="muted">Một nhân viên tham gia nhiều lớp được tính thành nhiều lượt.</p><div class="table-panel"><table class="data-table"><thead><tr><th>Quý / Năm</th><th>Lượt</th></tr></thead><tbody>
+@foreach(var row in Model.ThongKe.TheoQuy){<tr><td>Quý @row.Ky / @row.Nam</td><td>@row.SoLuot</td></tr>}
+@if(Model.ThongKe.TheoQuy.Count==0){<tr><td colspan="2">Chưa có dữ liệu.</td></tr>}
+</tbody></table></div></section>
+</div>
+
