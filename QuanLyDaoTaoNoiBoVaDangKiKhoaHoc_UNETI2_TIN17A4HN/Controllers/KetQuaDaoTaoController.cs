@@ -81,7 +81,7 @@ public class KetQuaDaoTaoController(ApplicationDbContext db, KetQuaDaoTaoService
                 KetQua = x.KetQuaDaoTao != null && x.KetQuaDaoTao.NgayDanhGia != null ? x.KetQuaDaoTao.KetQua : "ChuaDanhGia",
                 NgayDanhGia = x.KetQuaDaoTao == null ? null : x.KetQuaDaoTao.NgayDanhGia
             }).ToListAsync();
-        // Chưa xác nhận: tỷ lệ hiện tại từ điểm danh, không công bố điểm/kết quả nháp.
+        // Chưa xác nhận:  tỷ lệ hiện tại từ điểm danh, không công bố điểm/kết quả nháp.
         var pendingIds = rows.Where(x => !x.DaKhoa).Select(x => x.MaDangKy).ToArray();
         var today = service.Today; var time = TimeOnly.FromDateTime(service.Now);
         var live = await db.DangKyDaoTaos.AsNoTracking().Where(x => pendingIds.Contains(x.MaDangKy))
