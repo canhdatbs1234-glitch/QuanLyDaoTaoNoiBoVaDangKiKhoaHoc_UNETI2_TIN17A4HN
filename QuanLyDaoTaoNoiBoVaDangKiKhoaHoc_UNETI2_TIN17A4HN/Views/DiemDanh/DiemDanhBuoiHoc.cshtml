@@ -1,1 +1,34 @@
-1
+@*
+// Họ và tên: Phạm Việt Anh
+// Mã sinh viên: 23103100231
+// Nội dung thực hiện: Module 4 - Buổi học, Lịch học và Điểm danh
+*@
+@model DiemDanhViewModel
+@{ ViewData["Title"]="Điểm danh buổi học"; }
+<p class="eyebrow navy">ĐÀO TẠO / ĐIỂM DANH</p><h1>@Model.TenLop</h1>
+<p class="muted">@Model.NgayHoc.ToString("dd/MM/yyyy") · @Model.GioBatDau.ToString("HH:mm") – @Model.GioKetThuc.ToString("HH:mm") · @Model.NoiDung</p>
+<partial name="_Module2Messages" />
+@if(!Model.ChoPhepLuu){<div class="notice" role="status">@Model.LyDoKhongChoLuu</div>}
+<p class="muted">@Model.HocViens.Count học viên đã được duyệt. Chọn trạng thái cho từng người; không tự mặc định có mặt hoặc vắng.</p>
+<form asp-action="DiemDanhBuoiHoc" asp-route-id="@Model.MaBuoiHoc" method="post">
+<input type="hidden" asp-for="MaBuoiHoc" />
+<div class="table-panel"><table class="data-table"><thead><tr><th>Học viên / Phòng ban</th><th>Trạng thái</th><th>Ghi chú</th><th>Cập nhật gần nhất</th></tr></thead><tbody>
+@for(var i=0;i<Model.HocViens.Count;i++)
+{
+<tr><td>@Model.HocViens[i].HoTen<small>@Model.HocViens[i].TenPhongBan</small>
+<input type="hidden" asp-for="HocViens[i].MaNhanVien" />
+<input type="hidden" name="HocViens[@i].ThoiGianCapNhat" value="@(Model.HocViens[i].ThoiGianCapNhat?.ToString("O"))" />
+</td><td><div class="field"><label class="muted" asp-for="HocViens[i].TrangThai">Điểm danh @Model.HocViens[i].HoTen</label><select asp-for="HocViens[i].TrangThai" required disabled="@(!Model.ChoPhepLuu)"><option value="">Chọn trạng thái</option>
+@foreach(var status in DiemDanhHocVienViewModel.TrangThais){<option value="@status.Key">@status.Value</option>}
+</select><span asp-validation-for="HocViens[i].TrangThai" class="field-error"></span></div></td>
+<td><div class="field"><label class="muted" asp-for="HocViens[i].GhiChu">Ghi chú</label><textarea asp-for="HocViens[i].GhiChu" maxlength="1000" rows="2" disabled="@(!Model.ChoPhepLuu)"></textarea></div></td>
+<td>@(Model.HocViens[i].ThoiGianCapNhat?.ToString("dd/MM/yyyy HH:mm:ss") ?? "Chưa điểm danh")</td></tr>
+}
+@if(Model.HocViens.Count==0){<tr><td colspan="4" class="table-empty">Chưa có học viên được duyệt.</td></tr>}
+</tbody></table></div>
+<div class="actions editor-panel">
+@if(Model.ChoPhepLuu){<button class="primary-button" type="submit">Lưu điểm danh toàn bộ</button>}
+<a class="secondary-button" asp-action="DiemDanhBuoiHoc" asp-route-id="@Model.MaBuoiHoc">Tải lại dữ liệu</a>
+<a class="secondary-button" asp-controller="BuoiHoc" asp-action="Index" asp-route-maLop="@Model.MaLop">Về lịch lớp</a>
+<a class="secondary-button" asp-action="ThongKeThamGia" asp-route-maLop="@Model.MaLop">Báo cáo tham gia</a>
+</div></form>

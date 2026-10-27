@@ -1,3 +1,6 @@
+// Họ và tên: Phạm Việt Anh
+// Mã sinh viên: 23103100231
+// Nội dung thực hiện: Module 4 - Buổi học, Lịch học và Điểm danh
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

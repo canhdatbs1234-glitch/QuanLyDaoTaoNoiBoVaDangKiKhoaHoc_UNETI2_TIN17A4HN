@@ -1,1 +1,32 @@
-1
+@*
+// Họ và tên: Phạm Việt Anh
+// Mã sinh viên: 23103100231
+// Nội dung thực hiện: Module 4 - Buổi học, Lịch học và Điểm danh
+*@
+@model BaoCaoThamGiaViewModel
+@{ ViewData["Title"]="Theo dõi quá trình tham gia"; }
+<p class="eyebrow navy">ĐÀO TẠO / BÁO CÁO</p><h1>Theo dõi quá trình tham gia</h1>
+<form asp-action="ThongKeThamGia" method="get" class="filter-panel"><div class="field"><label asp-for="MaLop">Lớp đào tạo</label><select asp-for="MaLop" asp-items="Model.Lops" required><option value="">Chọn lớp để xem báo cáo</option></select></div><button class="primary-button" type="submit">Xem báo cáo</button></form>
+@if(Model.MaLop.HasValue)
+{
+<h2>@Model.TenLop</h2>
+<div class="notice"><strong>@Model.TongSoBuoi buổi trong lịch · @Model.TongSoBuoiHopLe buổi hợp lệ</strong><p>Buổi hợp lệ: đã kết thúc theo giờ Việt Nam, buổi và lớp không bị hủy. Tỷ lệ = số buổi Có mặt / số buổi hợp lệ × 100. Chưa điểm danh được ghi riêng, không tự xem là vắng. Khi chưa có buổi hợp lệ, tỷ lệ hiển thị 0%.</p></div>
+<div class="table-panel"><table class="data-table"><thead><tr><th>Nhân viên</th><th>Có mặt</th><th>Vắng có phép</th><th>Vắng không phép</th><th>Tổng vắng</th><th>Chưa điểm danh</th><th>Tỷ lệ tham dự</th></tr></thead><tbody>
+@foreach(var person in Model.NhanViens)
+{
+<tr><td>@person.HoTen</td><td>@person.SoBuoiCoMat / @person.TongSoBuoiHopLe</td><td>@person.SoBuoiVangCoPhep</td><td>@person.SoBuoiVangKhongPhep</td><td>@person.SoBuoiVang</td><td>@person.SoBuoiChuaDiemDanh</td><td><strong>@person.TyLeThamDu.ToString("0.##")%</strong></td></tr>
+<tr><td colspan="7"><details><summary>Chi tiết quá trình tham gia — @person.HoTen</summary>
+@if(person.SoBuoiDiMuon>0){<p class="muted">@person.SoBuoiDiMuon buổi Đi muộn (dữ liệu cũ), chưa tính Có mặt. Người phụ trách cần xác nhận lại trạng thái.</p>}
+<table class="data-table"><thead><tr><th>Ngày / Giờ</th><th>Nội dung</th><th>Điểm danh</th><th>Thời gian cập nhật</th><th>Ghi chú</th></tr></thead><tbody>
+@foreach(var entry in person.ChiTiet)
+{
+<tr><td>@entry.NgayHoc.ToString("dd/MM/yyyy") @entry.GioBatDau.ToString("HH:mm")</td><td>@entry.NoiDung</td><td>@entry.TenTrangThai</td><td>@(entry.ThoiGianCapNhat?.ToString("dd/MM/yyyy HH:mm:ss") ?? "—")</td><td class="preserve-lines">@entry.GhiChu</td></tr>
+}
+@if(person.ChiTiet.Count==0){<tr><td colspan="5">Chưa có buổi hợp lệ.</td></tr>}
+</tbody></table></details></td></tr>
+}
+@if(Model.NhanViens.Count==0){<tr><td colspan="7" class="table-empty">Không có học viên được duyệt để thống kê.</td></tr>}
+</tbody></table></div>
+}
+else { <p class="muted">Chọn một lớp để xem thống kê và chi tiết từng buổi.</p> }
+

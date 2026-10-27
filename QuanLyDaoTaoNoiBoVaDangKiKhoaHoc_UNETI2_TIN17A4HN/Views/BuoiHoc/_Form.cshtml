@@ -1,1 +1,20 @@
+@*
+// Họ và tên: Phạm Việt Anh
+// Mã sinh viên: 23103100231
+// Nội dung thực hiện: Module 4 - Buổi học, Lịch học và Điểm danh
+*@
+@model BuoiHocViewModel
+<div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+<div class="form-grid">
+<div class="field"><label asp-for="MaLop"></label><select asp-for="MaLop" asp-items="Model.Lops"><option value="">Chọn lớp đào tạo</option></select><span asp-validation-for="MaLop" class="field-error"></span></div>
+<div class="field"><label asp-for="NgayHoc"></label><input asp-for="NgayHoc" type="date" /><span asp-validation-for="NgayHoc" class="field-error"></span></div>
+<div class="field"><label asp-for="GioBatDau"></label><input asp-for="GioBatDau" type="time" asp-format="{0:HH:mm}" /><span asp-validation-for="GioBatDau" class="field-error"></span></div>
+<div class="field"><label asp-for="GioKetThuc"></label><input asp-for="GioKetThuc" type="time" asp-format="{0:HH:mm}" /><span asp-validation-for="GioKetThuc" class="field-error"></span></div>
+<div class="field"><label asp-for="DiaDiem"></label><input asp-for="DiaDiem"  /><span asp-validation-for="DiaDiem" class="field-error"></span></div>
+<div class="field"><label asp-for="TrangThai"></label><select asp-for="TrangThai"><option value="ChuaDienRa">Chưa diễn ra</option><option value="DaDienRa">Đã diễn ra</option><option value="DaHuy">Đã hủy</option></select><span asp-validation-for="TrangThai" class="field-error"></span></div>
+<div class="field full-width"><label asp-for="NoiDung"></label><textarea asp-for="NoiDung" rows="4"></textarea><span asp-validation-for="NoiDung" class="field-error"></span></div>
+</div>
+<p class="muted">Ngày học phải thuộc khoảng ngày của lớp. Không xếp hai buổi trùng giờ trong cùng lớp. Buổi đã điểm danh không được đổi lớp, ngày hoặc giờ.</p>
+<div class="actions"><button class="primary-button" type="submit">Lưu buổi học</button><a class="secondary-button" asp-action="Index" asp-route-maLop="@Model.MaLop">Quay lại lịch</a></div>
+
 1

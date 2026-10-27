@@ -1,1 +1,29 @@
-1
+@*
+// Họ và tên: Phạm Việt Anh
+// Mã sinh viên: 23103100231
+// Nội dung thực hiện: Module 4 - Buổi học, Lịch học và Điểm danh
+*@
+@model LichHocViewModel
+@{
+    var manager=Context.Session.GetString("VaiTro") is "QuanTri" or "QuanLy";
+    ViewData["Title"]=manager ? "Quản lý buổi học" : "Lịch học của tôi";
+}
+<div class="section-heading"><div><p class="eyebrow navy">ĐÀO TẠO / LỊCH HỌC</p><h1>@ViewData["Title"]</h1><p class="muted">@(manager ? "Lịch học theo từng lớp đào tạo." : "Các buổi học thuộc lớp bạn đã được duyệt tham gia.")</p></div>
+@if (manager) { <a class="primary-button" asp-action="Create" asp-route-maLop="@Model.MaLop">+ Thêm buổi học</a> }
+</div>
+<partial name="_Module2Messages" />
+<form asp-action="LichHoc" method="get" class="filter-panel"><div class="field"><label asp-for="MaLop">Lớp đào tạo</label><select asp-for="MaLop" asp-items="Model.Lops"><option value="">Tất cả lớp</option></select></div><div class="actions"><button type="submit" class="primary-button">Xem lịch</button><a class="secondary-button" asp-controller="DiemDanh" asp-action="ThongKeThamGia" asp-route-maLop="@Model.MaLop">Theo dõi tham gia</a></div></form>
+<div class="table-panel"><table class="data-table"><thead><tr><th>Ngày / Giờ</th><th>Lớp / Khóa</th><th>Nội dung</th><th>Địa điểm</th><th>Trạng thái</th>@if(manager){<th>Thao tác</th>}</tr></thead><tbody>
+@foreach(var item in Model.BuoiHocs)
+{
+<tr><td>@item.NgayHoc?.ToString("dd/MM/yyyy")<small>@item.GioBatDau?.ToString("HH:mm") – @item.GioKetThuc?.ToString("HH:mm")</small></td><td>@item.TenLop<small>@item.TenKhoaDaoTao</small></td><td class="preserve-lines">@item.NoiDung</td><td>@item.DiaDiem</td><td><span class="role-badge">@(item.TrangThaiLop == "DaHuy" ? "Lớp đã hủy" : item.TenTrangThai)</span></td>
+@if(manager)
+{
+<td class="row-actions"><a asp-controller="DiemDanh" asp-action="DiemDanhBuoiHoc" asp-route-id="@item.MaBuoiHoc">Điểm danh</a><a asp-action="Edit" asp-route-id="@item.MaBuoiHoc">Sửa buổi học</a>
+<details><summary>Xóa</summary><form asp-action="Delete" asp-route-id="@item.MaBuoiHoc" method="post"><label class="confirm-delete"><input type="checkbox" required /> Xác nhận xóa vĩnh viễn buổi chưa có điểm danh.</label><button type="submit" class="danger-button">Xóa buổi</button></form></details></td>
+}
+</tr>
+}
+@if(Model.BuoiHocs.Count==0){<tr><td colspan="@(manager ? 6 : 5)" class="table-empty">Chưa có buổi học phù hợp.</td></tr>}
+</tbody></table></div>
+

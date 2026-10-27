@@ -1,1 +1,14 @@
+@*
+// Họ và tên: Phạm Việt Anh
+// Mã sinh viên: 23103100231
+// Nội dung thực hiện: Module 4 - Buổi học, Lịch học và Điểm danh
+*@
+@model BuoiHocViewModel
+@{ ViewData["Title"]="Thêm buổi học"; }
+<p class="eyebrow navy">ĐÀO TẠO / LỊCH HỌC</p><h1>@ViewData["Title"]</h1>
+<section class="editor-panel"><form asp-action="Create"  method="post">
+
+<partial name="_Form" model="Model" />
+</form></section>
+
 1
