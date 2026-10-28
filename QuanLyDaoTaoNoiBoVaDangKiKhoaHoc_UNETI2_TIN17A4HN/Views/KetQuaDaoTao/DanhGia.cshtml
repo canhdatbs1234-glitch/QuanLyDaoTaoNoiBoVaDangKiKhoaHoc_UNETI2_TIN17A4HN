@@ -1,1 +1,98 @@
-1
+@*
+// Họ và tên: Đàm Quang Huy
+// Mã sinh viên: 23103100197
+// Nội dung thực hiện: Module 5 - Đánh giá, xác định Hoàn thành/Không hoàn thành và xác nhận kết quả.
+*@
+@model DanhGiaKetQuaViewModel
+@{
+    ViewData["Title"] = "Đánh giá kết quả đào tạo";
+}
+<p class="eyebrow navy">ĐÀO TẠO / KẾT QUẢ</p>
+<h1>Đánh giá: @Model.HoTen</h1>
+<p class="muted">@Model.TenPhongBan · @Model.TenLop (@Model.TenKhoa) · @Model.NgayBatDau.ToString("dd/MM/yyyy") – @Model.NgayKetThuc.ToString("dd/MM/yyyy")</p>
+
+<partial name="_ThongBao" />
+@if (!string.IsNullOrEmpty(Model.ThongBaoLoi))
+{
+    <div class="alert alert-error" role="alert">@Model.ThongBaoLoi</div>
+}
+@if (!string.IsNullOrEmpty(Model.LyDoKhongDanhGia))
+{
+    <div class="notice" role="status">@Model.LyDoKhongDanhGia</div>
+}
+
+<section class="editor-panel">
+    <h2>Căn cứ xác định kết quả (do hệ thống tính)</h2>
+    <dl class="detail-grid">
+        <dt>Số buổi hợp lệ</dt>
+        <dd><strong>@Model.TongSoBuoiHopLe</strong> buổi (đã kết thúc, chưa hủy)</dd>
+        <dt>Số buổi có mặt</dt>
+        <dd><strong>@Model.SoBuoiCoMat</strong> buổi</dd>
+        <dt>Tỷ lệ tham dự</dt>
+        <dd><strong>@Model.TyLeThamDu.ToString("0.##")%</strong> — yêu cầu tối thiểu @Model.TyLeThamDuToiThieu.ToString("0.##")%</dd>
+        <dt>Điểm đạt tối thiểu</dt>
+        <dd><strong>@Model.DiemDatToiThieu.ToString("0.##")</strong> / 10</dd>
+        <dt>Quy tắc</dt>
+        <dd>Hoàn thành khi <em>đồng thời</em> tỷ lệ tham dự ≥ @Model.TyLeThamDuToiThieu.ToString("0.##")% và điểm ≥ @Model.DiemDatToiThieu.ToString("0.##").</dd>
+    </dl>
+</section>
+
+<section class="editor-panel">
+    <h2>Kết quả đã lưu</h2>
+    <dl class="detail-grid">
+        <dt>Kết quả</dt>
+        <dd><span class="status-badge @Model.KetQuaCss">@Model.TenKetQuaHienTai</span></dd>
+        <dt>Điểm / Tỷ lệ lúc đánh giá</dt>
+        <dd>@(Model.DiemDaLuu.HasValue ? Model.DiemDaLuu.Value.ToString("0.##") : "—") điểm · @(Model.TyLeDaLuu.HasValue ? Model.TyLeDaLuu.Value.ToString("0.##") + "%" : "—")</dd>
+        <dt>Ngày đánh giá</dt>
+        <dd>@(Model.NgayDanhGia?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa đánh giá")</dd>
+        <dt>Xác nhận</dt>
+        <dd>
+            @if (Model.DaXacNhan)
+            {
+                <span class="status-badge status-on">Đã xác nhận</span>
+                <small>@Model.NgayXacNhan?.ToString("dd/MM/yyyy HH:mm") · @Model.TenNguoiXacNhan</small>
+            }
+            else { <span class="status-badge status-muted">Chưa xác nhận</span> }
+        </dd>
+        @if (!string.IsNullOrWhiteSpace(Model.GhiChuDaLuu))
+        {
+            <dt>Ghi chú / lịch sử điều chỉnh</dt>
+            <dd class="preserve-lines">@Model.GhiChuDaLuu</dd>
+        }
+    </dl>
+</section>
+
+<section class="editor-panel">
+    <h2>@(Model.LaDieuChinh ? "Điều chỉnh kết quả đã xác nhận" : "Nhập điểm đánh giá")</h2>
+    <form asp-action="DanhGia" method="post">
+        <input type="hidden" name="maDangKy" value="@Model.MaDangKy" />
+        <div class="field">
+            <label for="diemDanhGia">Điểm đánh giá (0–10)</label>
+            <input id="diemDanhGia" name="diemDanhGia" type="number" min="0" max="10" step="0.01"
+                   value="@Model.DiemNhap" required disabled="@(!Model.ChoPhepLuu)" />
+        </div>
+        <div class="field">
+            <label for="ghiChu">@(Model.LaDieuChinh ? "Lý do điều chỉnh (bắt buộc)" : "Ghi chú")</label>
+            <textarea id="ghiChu" name="ghiChu" rows="3" maxlength="1000"
+                      required="@Model.LaDieuChinh" disabled="@(!Model.ChoPhepLuu)">@Model.GhiChu</textarea>
+        </div>
+        @if (Model.KetQuaDuKien is not null)
+        {
+            <p class="muted">Với điểm đang nhập, kết quả dự kiến: <strong>@Model.KetQuaDuKien</strong> (chỉ là xem trước; kết quả chính thức do hệ thống tính khi lưu).</p>
+        }
+        <div class="actions">
+            @if (Model.ChoPhepLuu) { <button class="primary-button" type="submit">Lưu đánh giá</button> }
+            <a class="secondary-button" asp-action="Index">← Về danh sách</a>
+        </div>
+    </form>
+
+    @if (Model.ChoPhepXacNhan && Model.MaKetQua.HasValue)
+    {
+        <form asp-action="XacNhan" method="post" class="actions">
+            <input type="hidden" name="maKetQua" value="@Model.MaKetQua" />
+            <input type="hidden" name="maDangKy" value="@Model.MaDangKy" />
+            <button class="primary-button" type="submit">Xác nhận kết quả này</button>
+        </form>
+    }
+</section>

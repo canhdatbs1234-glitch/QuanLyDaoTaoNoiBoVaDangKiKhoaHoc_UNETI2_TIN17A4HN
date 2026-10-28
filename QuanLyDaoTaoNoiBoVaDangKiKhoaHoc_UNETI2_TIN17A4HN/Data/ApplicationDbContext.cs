@@ -155,15 +155,22 @@ public partial class ApplicationDbContext : DbContext
                 table.HasCheckConstraint("CK_KetQuaDaoTao_Diem", "[DiemDanhGia] IS NULL OR [DiemDanhGia] BETWEEN 0 AND 10");
                 table.HasCheckConstraint("CK_KetQuaDaoTao_TyLe", "[TyLeThamDu] BETWEEN 0 AND 100");
                 table.HasCheckConstraint("CK_KetQuaDaoTao_KetQua", "[KetQua] IN (N'ChuaDanhGia', N'Dat', N'KhongDat')");
+                // MỚI: kết quả đã xác nhận bắt buộc phải là kết quả đã được đánh giá.
+                table.HasCheckConstraint("CK_KetQuaDaoTao_XacNhan", "[DaXacNhan] = 0 OR [KetQua] <> N'ChuaDanhGia'");
             });
             entity.Property(x => x.DiemDanhGia).HasPrecision(4, 2);
             entity.Property(x => x.TyLeThamDu).HasPrecision(5, 2);
             entity.Property(x => x.NgayDanhGia).HasColumnType("datetime2");
+            entity.Property(x => x.NgayXacNhan).HasColumnType("datetime2");   // MỚI
             entity.HasIndex(x => x.MaDangKy).IsUnique();
             // Kết quả là thành phần phụ thuộc của đăng ký; chỉ xóa theo đăng ký.
             entity.HasOne(x => x.DangKyDaoTao).WithOne(x => x.KetQuaDaoTao)
                 .HasForeignKey<KetQuaDaoTao>(x => x.MaDangKy)
                 .OnDelete(DeleteBehavior.Cascade);
+            // MỚI: người xác nhận (tài khoản Admin/Nhân sự), không xóa dây chuyền.
+            entity.HasOne(x => x.NguoiXacNhan).WithMany()
+                .HasForeignKey(x => x.MaNguoiXacNhan)
+                .OnDelete(DeleteBehavior.NoAction);
         });
     }
 }
