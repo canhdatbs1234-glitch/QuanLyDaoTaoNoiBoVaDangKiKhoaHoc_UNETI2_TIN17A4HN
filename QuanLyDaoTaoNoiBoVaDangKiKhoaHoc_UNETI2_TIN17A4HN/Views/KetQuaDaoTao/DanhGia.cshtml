@@ -53,7 +53,11 @@
                 <span class="status-badge status-on">Đã xác nhận</span>
                 <small>@Model.NgayXacNhan?.ToString("dd/MM/yyyy HH:mm") · @Model.TenNguoiXacNhan</small>
             }
-            else { <span class="status-badge status-muted">Chưa xác nhận</span> }
+            else
+            {
+
+                <span class="status-badge status-muted">Chưa xác nhận</span>
+            }
         </dd>
         @if (!string.IsNullOrWhiteSpace(Model.GhiChuDaLuu))
         {
@@ -82,7 +86,10 @@
             <p class="muted">Với điểm đang nhập, kết quả dự kiến: <strong>@Model.KetQuaDuKien</strong> (chỉ là xem trước; kết quả chính thức do hệ thống tính khi lưu).</p>
         }
         <div class="actions">
-            @if (Model.ChoPhepLuu) { <button class="primary-button" type="submit">Lưu đánh giá</button> }
+            @if (Model.ChoPhepLuu)
+            {
+                <button class="primary-button" type="submit">Lưu đánh giá</button>
+            }
             <a class="secondary-button" asp-action="Index">← Về danh sách</a>
         </div>
     </form>

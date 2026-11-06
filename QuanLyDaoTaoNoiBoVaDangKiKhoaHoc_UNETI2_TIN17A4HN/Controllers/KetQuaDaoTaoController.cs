@@ -185,6 +185,151 @@ public class KetQuaDaoTaoController(ApplicationDbContext db, KetQuaDaoTaoService
     }
 
     // =====================================================================
+    // LỊCH SỬ ĐÀO TẠO (mục 9.5)
+    //  - Nhân viên: chỉ xem của chính mình
+    //  - Quản trị / Nhân sự - Đào tạo: xem của bất kỳ nhân viên (từ trang chi tiết nhân viên)
+    // =====================================================================
+    [HttpGet, Authorize]
+    public async Task<IActionResult> LichSuDaoTao(int? maNhanVien, string? searchTerm,
+        string? trangThaiDangKy, string? ketQua, int pageIndex = 1)
+    {
+        var vaiTro = User.GetVaiTro();
+        var maTk = User.GetMaTaiKhoan() ?? 0;
+        var quanLyXem = vaiTro is "QuanTri" or "QuanLy";
+        if (!quanLyXem && vaiTro != "NhanVien") return Forbid();
+
+        NhanVien? nv;
+        if (quanLyXem)
+        {
+            if (maNhanVien is null or <= 0) return RedirectToAction("Index", "NhanVien");
+            nv = await db.NhanViens.AsNoTracking().Include(n => n.PhongBan)
+                .SingleOrDefaultAsync(n => n.MaNhanVien == maNhanVien.Value);
+            if (nv is null) return NotFound();
+        }
+        else
+        {
+            // Nhân viên: luôn lấy hồ sơ theo TÀI KHOẢN ĐANG ĐĂNG NHẬP, không tin tham số trên URL.
+            nv = await db.NhanViens.AsNoTracking().Include(n => n.PhongBan)
+                .SingleOrDefaultAsync(n => n.MaTaiKhoan == maTk);
+            if (nv is null) return View(new LichSuDaoTaoViewModel { ChuaCoHoSo = true });
+            if (maNhanVien.HasValue && maNhanVien.Value != nv.MaNhanVien) return Forbid();
+        }
+
+        var maNv = nv.MaNhanVien;
+        searchTerm = searchTerm?.Trim();
+
+        // Truy vấn gốc: MỌI đăng ký của nhân viên (không xóa dữ liệu -> giữ trọn lịch sử)
+        var tatCa = db.DangKyDaoTaos.AsNoTracking().Where(d => d.MaNhanVien == maNv);
+        var query = tatCa;
+
+        if (!string.IsNullOrEmpty(searchTerm))
+            query = query.Where(d => d.LopDaoTao.TenLop.Contains(searchTerm)
+                                  || d.LopDaoTao.KhoaDaoTao.TenKhoaDaoTao.Contains(searchTerm));
+        if (!string.IsNullOrEmpty(trangThaiDangKy) && TrangThaiDangKyConst.TenTrangThai.ContainsKey(trangThaiDangKy))
+            query = query.Where(d => d.TrangThai == trangThaiDangKy);
+
+        switch (ketQua)
+        {
+            case "chua":
+                query = query.Where(d => d.TrangThai == TrangThaiDangKyConst.DaDuyet
+                                      && (d.KetQuaDaoTao == null || !d.KetQuaDaoTao.DaXacNhan));
+                break;
+            case KetQuaConst.HoanThanh:
+                query = query.Where(d => d.KetQuaDaoTao != null && d.KetQuaDaoTao.DaXacNhan
+                                      && d.KetQuaDaoTao.KetQua == KetQuaConst.HoanThanh);
+                break;
+            case KetQuaConst.KhongHoanThanh:
+                query = query.Where(d => d.KetQuaDaoTao != null && d.KetQuaDaoTao.DaXacNhan
+                                      && d.KetQuaDaoTao.KetQua == KetQuaConst.KhongHoanThanh);
+                break;
+        }
+
+        query = query.OrderByDescending(d => d.LopDaoTao.NgayBatDau).ThenByDescending(d => d.MaDangKy);
+
+        // Phân trang sau khi đã lọc + sắp xếp
+        var total = await query.CountAsync();
+        var totalPages = (int)Math.Ceiling(total / (double)PageSize);
+        pageIndex = Math.Clamp(pageIndex, 1, Math.Max(totalPages, 1));
+
+        var items = await query
+            .Skip((pageIndex - 1) * PageSize)
+            .Take(PageSize)
+            .Select(d => new LichSuDongViewModel
+            {
+                MaDangKy = d.MaDangKy,
+                MaLop = d.MaLop,
+                TenLop = d.LopDaoTao.TenLop,
+                TenKhoa = d.LopDaoTao.KhoaDaoTao.TenKhoaDaoTao,
+                DiaDiem = d.LopDaoTao.DiaDiem,
+                NgayBatDau = d.LopDaoTao.NgayBatDau,
+                NgayKetThuc = d.LopDaoTao.NgayKetThuc,
+                TrangThaiDangKy = d.TrangThai,
+                NgayDangKy = d.NgayDangKy,
+                NgayDuyet = d.NgayDuyet,
+                GhiChuDangKy = d.GhiChu,
+                CoKetQua = d.KetQuaDaoTao != null && d.KetQuaDaoTao.KetQua != KetQuaConst.ChuaDanhGia,
+                KetQua = d.KetQuaDaoTao != null ? d.KetQuaDaoTao.KetQua : KetQuaConst.ChuaDanhGia,
+                DiemDanhGia = d.KetQuaDaoTao != null ? d.KetQuaDaoTao.DiemDanhGia : null,
+                TyLeThamDu = d.KetQuaDaoTao != null ? d.KetQuaDaoTao.TyLeThamDu : (decimal?)null,
+                DaXacNhan = d.KetQuaDaoTao != null && d.KetQuaDaoTao.DaXacNhan,
+                NgayXacNhan = d.KetQuaDaoTao != null ? d.KetQuaDaoTao.NgayXacNhan : null,
+                XemSoBo = quanLyXem
+            })
+            .ToListAsync();
+
+        // Tỷ lệ tham dự tạm tính cho các lớp đã duyệt: gom theo lớp để tránh truy vấn từng dòng (N+1).
+        var maLops = items.Where(i => i.DaDuyet).Select(i => i.MaLop).Distinct().ToList();
+        if (maLops.Count > 0)
+        {
+            var buoiHopLe = service.BuoiHopLe(LopDaoTaoRules.BayGioVietNam()).Where(b => maLops.Contains(b.MaLop));
+
+            var tongTheoLop = await buoiHopLe
+                .GroupBy(b => b.MaLop)
+                .Select(g => new { MaLop = g.Key, So = g.Count() })
+                .ToDictionaryAsync(x => x.MaLop, x => x.So);
+
+            var coMatTheoLop = await (from dd in db.DiemDanhs.AsNoTracking()
+                                      join b in buoiHopLe on dd.MaBuoiHoc equals b.MaBuoiHoc
+                                      where dd.MaNhanVien == maNv && dd.TrangThai == "CoMat"
+                                      group b by b.MaLop into g
+                                      select new { MaLop = g.Key, So = g.Count() })
+                                     .ToDictionaryAsync(x => x.MaLop, x => x.So);
+
+            foreach (var item in items.Where(i => i.DaDuyet))
+            {
+                item.TongSoBuoiHopLe = tongTheoLop.GetValueOrDefault(item.MaLop);
+                item.SoBuoiCoMat = coMatTheoLop.GetValueOrDefault(item.MaLop);
+            }
+        }
+
+        // Tổng hợp trên TOÀN BỘ lịch sử (không phụ thuộc bộ lọc), chỉ tính kết quả đã xác nhận
+        var daXacNhan = db.KetQuaDaoTaos.AsNoTracking()
+            .Where(k => k.DangKyDaoTao.MaNhanVien == maNv && k.DaXacNhan);
+
+        var model = new LichSuDaoTaoViewModel
+        {
+            QuanLyXem = quanLyXem,
+            MaNhanVien = maNv,
+            HoTen = nv.HoTen,
+            TenPhongBan = nv.PhongBan.TenPhongBan,
+            Email = nv.Email,
+            TongDangKy = await tatCa.CountAsync(),
+            SoDaDuyet = await tatCa.CountAsync(d => d.TrangThai == TrangThaiDangKyConst.DaDuyet),
+            SoHoanThanh = await daXacNhan.CountAsync(k => k.KetQua == KetQuaConst.HoanThanh),
+            SoKhongHoanThanh = await daXacNhan.CountAsync(k => k.KetQua == KetQuaConst.KhongHoanThanh),
+            TyLeThamDuTrungBinh = await daXacNhan.AverageAsync(k => (decimal?)k.TyLeThamDu),
+            SearchTerm = searchTerm,
+            TrangThaiDangKy = trangThaiDangKy,
+            KetQua = ketQua,
+            PageIndex = pageIndex,
+            PageSize = PageSize,
+            TotalCount = total,
+            Items = items
+        };
+        return View(model);
+    }
+
+    // =====================================================================
     // HÀM HỖ TRỢ
     // =====================================================================
     private Task<DangKyDaoTao?> TaiDangKyAsync(int maDangKy) =>
