@@ -1,0 +1,278 @@
+﻿@*
+// Họ và tên: Đàm Quang Huy
+// Mã sinh viên: 23103100197
+// Nội dung thực hiện: Module 5 - Thống kê LINQ (mục 9.7).
+*@
+@model ThongKeViewModel
+@{
+    ViewData["Title"] = "Thống kê đào tạo";
+}
+<style>
+    .m5-bar {
+        height: 10px;
+        background: #e5e7eb;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-top: 6px;
+        min-width: 80px;
+    }
+
+        .m5-bar > span {
+            display: block;
+            height: 100%;
+            background: #1f7a4d;
+        }
+
+    .m5-section-title {
+        margin: 30px 0 6px;
+    }
+
+    .m5-note {
+        margin: 0 0 10px;
+    }
+
+    .m5-index a {
+        margin-right: 12px;
+    }
+</style>
+
+<div class="section-heading">
+    <div>
+        <p class="eyebrow navy">QUẢN LÝ ĐÀO TẠO</p>
+        <h1>Thống kê đào tạo</h1>
+        <p class="muted">Tất cả số liệu được tính bằng LINQ trực tiếp từ cơ sở dữ liệu.</p>
+    </div><a class="secondary-button" asp-action="Index">← Dashboard</a>
+</div>
+
+<p class="m5-index">
+    <a href="#tk1">1. Phòng ban</a><a href="#tk2">2. Đăng ký</a><a href="#tk3">3. Lớp đông nhất</a><a href="#tk4">4. Chỗ còn</a><a href="#tk5">5. Hoàn thành</a>
+    <a href="#tk6">6. Tham dự</a><a href="#tk7">7. Vắng</a><a href="#tk8">8. Nhiều khóa nhất</a><a href="#tk9">9. Tháng/quý</a>
+</p>
+
+<h2 id="tk1" class="m5-section-title">1. Nhân viên tham gia theo phòng ban</h2>
+<p class="muted m5-note">Tham gia = có ít nhất một đăng ký đã duyệt (mỗi nhân viên chỉ đếm một lần).</p>
+<div class="table-panel">
+    <table class="data-table">
+        <thead><tr><th>Phòng ban</th><th>NV đang hoạt động</th><th>NV đã tham gia</th><th>Lượt đào tạo</th></tr></thead>
+        <tbody>
+            @foreach (var r in Model.PhongBans)
+            {
+                <tr><td>@r.TenPhongBan</td><td>@r.SoNhanVienHoatDong</td><td><strong>@r.SoNhanVienThamGia</strong></td><td>@r.SoLuotDaoTao</td></tr>
+            }
+            @if (Model.PhongBans.Count == 0)
+            {
+                <tr><td colspan="4" class="table-empty">Chưa có dữ liệu.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h2 id="tk2" class="m5-section-title">2. Số đăng ký theo khóa / lớp</h2>
+<div class="table-panel">
+    <table class="data-table">
+        <thead><tr><th>Khóa đào tạo</th><th>Số lớp</th><th>Chờ duyệt</th><th>Đã duyệt</th><th>Từ chối</th><th>Đã hủy</th><th>Tổng</th></tr></thead>
+        <tbody>
+            @foreach (var r in Model.Khoas)
+            {
+                <tr><td>@r.TenKhoa</td><td>@r.SoLop</td><td>@r.ChoDuyet</td><td>@r.DaDuyet</td><td>@r.TuChoi</td><td>@r.DaHuy</td><td><strong>@r.TongDangKy</strong></td></tr>
+            }
+            @if (Model.Khoas.Count == 0)
+            {
+                <tr><td colspan="7" class="table-empty">Chưa có dữ liệu.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="table-panel" style="margin-top:12px">
+    <table class="data-table">
+        <thead><tr><th>Lớp / Khóa</th><th>Trạng thái lớp</th><th>Chờ duyệt</th><th>Đã duyệt</th><th>Từ chối</th><th>Đã hủy</th><th>Tổng</th></tr></thead>
+        <tbody>
+            @foreach (var r in Model.Lops)
+            {
+                <tr><td>@r.TenLop<small>@r.TenKhoa</small></td><td>@r.TenTrangThai</td><td>@r.ChoDuyet</td><td>@r.DaDuyet</td><td>@r.TuChoi</td><td>@r.DaHuy</td><td><strong>@r.TongDangKy</strong></td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h2 id="tk3" class="m5-section-title">3. Lớp có nhiều người đăng ký nhất</h2>
+<p class="muted m5-note">Top 5 theo số đăng ký còn hiệu lực (chờ duyệt + đã duyệt), không tính lớp đã hủy.</p>
+<div class="table-panel">
+    <table class="data-table">
+        <thead><tr><th>#</th><th>Lớp / Khóa</th><th>Chờ duyệt</th><th>Đã duyệt</th><th>Đăng ký hiệu lực</th></tr></thead>
+        <tbody>
+            @{
+                var stt = 0;
+            }
+            @foreach (var r in Model.LopDongNhat)
+            {
+                stt++;
+                <tr><td>@stt</td><td>@r.TenLop<small>@r.TenKhoa</small></td><td>@r.ChoDuyet</td><td>@r.DaDuyet</td><td><strong>@r.DangKyHieuLuc</strong></td></tr>
+            }
+            @if (Model.LopDongNhat.Count == 0)
+            {
+                <tr><td colspan="5" class="table-empty">Chưa có đăng ký nào.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h2 id="tk4" class="m5-section-title">4. Số chỗ còn của từng lớp</h2>
+<p class="muted m5-note">Chỗ còn = số lượng tối đa − số đăng ký đã duyệt.</p>
+<div class="table-panel">
+    <table class="data-table">
+        <thead><tr><th>Lớp / Khóa</th><th>Trạng thái lớp</th><th>Tối đa</th><th>Đã duyệt</th><th>Chỗ còn</th></tr></thead>
+        <tbody>
+            @foreach (var r in Model.Lops)
+            {
+                <tr>
+                    <td>@r.TenLop<small>@r.TenKhoa</small></td>
+                    <td>@r.TenTrangThai</td>
+                    <td>@r.SoLuongToiDa</td>
+                    <td>@r.DaDuyet</td>
+                    <td><strong class="@(r.SoChoCon > 0 ? "seats-available" : "seats-full")">@r.SoChoCon</strong></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h2 id="tk5" class="m5-section-title">5. Tỷ lệ hoàn thành theo lớp / khóa</h2>
+<p class="muted m5-note">Chỉ tính kết quả đã xác nhận. "—" nghĩa là chưa có kết quả nào được xác nhận.</p>
+<div class="table-panel">
+    <table class="data-table">
+        <thead><tr><th>Khóa đào tạo</th><th>Hoàn thành</th><th>Không hoàn thành</th><th>Tỷ lệ hoàn thành</th></tr></thead>
+        <tbody>
+            @foreach (var r in Model.Khoas)
+            {
+                <tr>
+                    <td>@r.TenKhoa</td>
+                    <td>@r.HoanThanh</td>
+                    <td>@r.KhongHoanThanh</td>
+                    <td><strong>@ThongKeViewModel.Pct(r.TyLeHoanThanh)</strong><div class="m5-bar"><span style="width:@ThongKeViewModel.Css(r.TyLeHoanThanh ?? 0)%"></span></div></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="table-panel" style="margin-top:12px">
+    <table class="data-table">
+        <thead><tr><th>Lớp / Khóa</th><th>Hoàn thành</th><th>Không hoàn thành</th><th>Tỷ lệ hoàn thành</th></tr></thead>
+        <tbody>
+            @foreach (var r in Model.Lops)
+            {
+                <tr>
+                    <td>@r.TenLop<small>@r.TenKhoa</small></td>
+                    <td>@r.HoanThanh</td>
+                    <td>@r.KhongHoanThanh</td>
+                    <td><strong>@ThongKeViewModel.Pct(r.TyLeHoanThanh)</strong><div class="m5-bar"><span style="width:@ThongKeViewModel.Css(r.TyLeHoanThanh ?? 0)%"></span></div></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h2 id="tk6" class="m5-section-title">6. Tỷ lệ tham dự trung bình</h2>
+<p class="muted m5-note">
+    Trung bình chung toàn hệ thống: <strong>@ThongKeViewModel.Pct(Model.TyLeThamDuTrungBinhChung)</strong>.
+    Công thức: tổng lượt Có mặt ÷ (số buổi hợp lệ × số học viên đã duyệt). Học viên chưa được điểm danh vẫn nằm ở mẫu số.
+</p>
+<div class="table-panel">
+    <table class="data-table">
+        <thead><tr><th>Lớp / Khóa</th><th>Buổi hợp lệ</th><th>Học viên đã duyệt</th><th>Lượt có mặt</th><th>Tỷ lệ tham dự TB</th></tr></thead>
+        <tbody>
+            @foreach (var r in Model.Lops)
+            {
+                <tr>
+                    <td>@r.TenLop<small>@r.TenKhoa</small></td>
+                    <td>@r.TongSoBuoiHopLe</td>
+                    <td>@r.DaDuyet</td>
+                    <td>@r.SoLuotCoMat</td>
+                    <td><strong>@ThongKeViewModel.Pct(r.TyLeThamDuTrungBinh)</strong><div class="m5-bar"><span style="width:@ThongKeViewModel.Css(r.TyLeThamDuTrungBinh ?? 0)%"></span></div></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h2 id="tk7" class="m5-section-title">7. Số lượt vắng theo lớp</h2>
+<p class="muted m5-note">Tổng toàn hệ thống: <strong>@Model.TongSoLuotVang</strong> lượt vắng (đã điểm danh vắng, trong các buổi hợp lệ).</p>
+<div class="table-panel">
+    <table class="data-table">
+        <thead><tr><th>Lớp / Khóa</th><th>Vắng không phép</th><th>Vắng có phép</th><th>Tổng lượt vắng</th></tr></thead>
+        <tbody>
+            @foreach (var r in Model.Lops)
+            {
+                <tr><td>@r.TenLop<small>@r.TenKhoa</small></td><td>@r.SoLuotVangKhongPhep</td><td>@r.SoLuotVangCoPhep</td><td><strong>@r.SoLuotVang</strong></td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h2 id="tk8" class="m5-section-title">8. Nhân viên tham gia nhiều khóa nhất</h2>
+<p class="muted m5-note">Top 10 theo số khóa khác nhau đã được duyệt; nếu bằng nhau thì xét số lớp.</p>
+<div class="table-panel">
+    <table class="data-table">
+        <thead><tr><th>#</th><th>Nhân viên</th><th>Phòng ban</th><th>Số khóa</th><th>Số lớp</th></tr></thead>
+        <tbody>
+            @{
+                var sttNv = 0;
+            }
+            @foreach (var r in Model.NhanVienNhieuKhoa)
+            {
+                sttNv++;
+                <tr><td>@sttNv</td><td>@r.HoTen</td><td>@r.TenPhongBan</td><td><strong>@r.SoKhoa</strong></td><td>@r.SoLop</td></tr>
+            }
+            @if (Model.NhanVienNhieuKhoa.Count == 0)
+            {
+                <tr><td colspan="5" class="table-empty">Chưa có dữ liệu.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h2 id="tk9" class="m5-section-title">9. Số lượt đào tạo theo tháng / quý</h2>
+<form asp-action="ThongKe" method="get" class="filter-panel">
+    <div class="field">
+        <label for="nam">Năm</label>
+        <select id="nam" name="nam" onchange="this.form.submit()">
+            @foreach (var y in Model.Nams)
+            {
+                <option value="@y" selected="@(y == Model.Nam)">@y</option>
+            }
+            @if (Model.Nams.Count == 0)
+            {
+                <option value="@Model.Nam">@Model.Nam</option>
+            }
+        </select>
+    </div>
+    <noscript><div class="actions"><button type="submit" class="primary-button">Xem</button></div></noscript>
+</form>
+<p class="muted m5-note">Lượt đào tạo = đăng ký đã duyệt, tính theo tháng bắt đầu của lớp trong năm @Model.Nam.</p>
+<div class="table-panel">
+    <table class="data-table">
+        <thead><tr><th>Tháng</th><th>Lượt đào tạo</th><th>Lượt hoàn thành</th><th>Biểu đồ</th></tr></thead>
+        <tbody>
+            @foreach (var t in Model.Thangs)
+            {
+                var pct = Model.MaxLuotThang == 0 ? 0m : t.SoLuot * 100m / Model.MaxLuotThang;
+                <tr>
+                    <td>@t.Nhan</td>
+                    <td><strong>@t.SoLuot</strong></td>
+                    <td>@t.SoHoanThanh</td>
+                    <td><div class="m5-bar"><span style="width:@ThongKeViewModel.Css(pct)%"></span></div></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="table-panel" style="margin-top:12px">
+    <table class="data-table">
+        <thead><tr><th>Quý</th><th>Lượt đào tạo</th><th>Lượt hoàn thành</th></tr></thead>
+        <tbody>
+            @foreach (var q in Model.Quys)
+            {
+                <tr><td>@q.Nhan / @Model.Nam</td><td><strong>@q.SoLuot</strong></td><td>@q.SoHoanThanh</td></tr>
+            }
+        </tbody>
+    </table></div>

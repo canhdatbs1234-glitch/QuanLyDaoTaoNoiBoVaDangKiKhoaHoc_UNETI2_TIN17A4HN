@@ -1,0 +1,87 @@
+@functions { public string TenVaiTro(string? role) => role switch { "QuanTri" => "Admin / Nhân sự - Đào tạo", "GiangVien" => "Giảng viên", "NhanVien" => "Nhân viên", _ => "Không xác định" }; }
+@*
+//Họ và tên: Nguyễn Cảnh Đạt
+//Mã sinh viên: 23103100224
+//Module 1: Tài khoản – Đăng nhập – Phân quyền – Phòng ban – Lĩnh vực đào tạo.
+*@
+@{
+    var loggedIn = Context.Session.DaDangNhap();
+    var role = Context.Session.GetVaiTro();
+    var management = role == "QuanTri";
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var buoiHocActive = controller == "BuoiHoc";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] | Đào tạo nội bộ UNETI</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Đến nội dung chính</a>
+    <div class="utility-bar"><span>TRƯỜNG ĐẠI HỌC KINH TẾ - KỸ THUẬT CÔNG NGHIỆP</span><span>Tri thức • Kỹ năng • Phát triển</span></div>
+    <header class="portal-header">
+        <a class="brand" asp-controller="Home" asp-action="Index">
+            <img src="~/images/uneti-mark.svg" alt="Biểu trưng chữ UNETI" width="56" height="56" />
+            <span><small>UNETI · INTERNAL LEARNING</small><strong>CỔNG THÔNG TIN<br />ĐÀO TẠO NỘI BỘ UNETI</strong></span>
+        </a>
+        @if (loggedIn)
+        {
+            <div class="user-area">
+                <div><strong>@Context.Session.GetHoTen()</strong><span class="role-badge">@TenVaiTro(role)</span></div>
+                <form asp-controller="TaiKhoan" asp-action="DangXuat" method="post"><button class="logout-button" type="submit">Đăng xuất ↗</button></form>
+            </div>
+        }
+        else
+        {
+            <span class="header-caption">CỔNG DÀNH CHO CÁN BỘ &amp; NHÂN VIÊN</span>
+        }
+    </header>
+    <div class="accent-strip"></div>
+    <div class="@(loggedIn ? "portal-shell" : "guest-shell")">
+        @if (loggedIn)
+        {
+            <aside class="sidebar">
+                <p class="nav-label">KHÔNG GIAN ĐÀO TẠO</p>
+                <nav aria-label="Menu chính">
+                    <a class="@(controller == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index"><span aria-hidden="true">▦</span> Trang chủ</a>
+                    @if (management)
+                    {
+                        <a class="@(controller == "Dashboard" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Dashboard" asp-action="Index"><span aria-hidden="true">◔</span> Dashboard</a>
+                        <a class="@(controller == "Dashboard" && ViewContext.RouteData.Values["action"]?.ToString() == "ThongKe" ? "active" : "")" asp-controller="Dashboard" asp-action="ThongKe"><span aria-hidden="true">▥</span> Thống kê</a>
+                        <a class="@(controller == "TaiKhoan" ? "active" : "")" asp-controller="TaiKhoan" asp-action="Index"><span aria-hidden="true">♙</span> Tài khoản</a>
+                        <a class="@(controller == "PhongBan" ? "active" : "")" asp-controller="PhongBan" asp-action="Index"><span aria-hidden="true">▤</span> Phòng ban</a>
+                        <a class="@(controller == "LinhVucDaoTao" ? "active" : "")" asp-controller="LinhVucDaoTao" asp-action="Index"><span aria-hidden="true">▤</span> Lĩnh vực đào tạo</a>
+                        <a class="@(controller == "KhoaDaoTao" ? "active" : "")" asp-controller="KhoaDaoTao" asp-action="Index"><span aria-hidden="true">▤</span> Khóa đào tạo</a>
+                        <a class="@(controller == "LopDaoTao" ? "active" : "")" asp-controller="LopDaoTao" asp-action="Index"><span aria-hidden="true">▤</span> Lớp đào tạo</a>
+                        <a class="@(controller == "NhanVien" ? "active" : "")" asp-controller="NhanVien" asp-action="Index"><span aria-hidden="true">👥</span> Hồ sơ nhân viên</a>
+                        <a class="@(controller == "DangKyDaoTao" && ViewContext.RouteData.Values["action"]?.ToString() == "DuyetDangKy" ? "active" : "")" asp-controller="DangKyDaoTao" asp-action="DuyetDangKy"><span aria-hidden="true">✓</span> Duyệt đăng ký</a>
+                        <a class="@(controller is "BuoiHoc" or "DiemDanh" ? "active" : "")" asp-controller="BuoiHoc" asp-action="Index"><span aria-hidden="true">▦</span> Buổi học / Điểm danh</a>
+                        <a class="@(controller == "KetQuaDaoTao" ? "active" : "")" asp-controller="KetQuaDaoTao" asp-action="Index"><span aria-hidden="true">★</span> Kết quả đào tạo</a>
+                    }
+                    else
+                    {
+                        <a class="@(controller == "DangKyDaoTao" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="DangKyDaoTao" asp-action="Index"><span aria-hidden="true">✎</span> Đăng ký khóa học</a>
+                        <a class="@(controller == "DangKyDaoTao" && ViewContext.RouteData.Values["action"]?.ToString() == "LichSuDangKy" ? "active" : "")" asp-controller="DangKyDaoTao" asp-action="LichSuDangKy"><span aria-hidden="true">📋</span> Lịch sử đào tạo</a>
+                        @if (role == "GiangVien")
+                        {
+                            <a class="@(controller == "KetQuaDaoTao" ? "active" : "")" asp-controller="KetQuaDaoTao" asp-action="Index"><span aria-hidden="true">★</span> Kết quả đào tạo</a>
+                        }
+                        else
+                        {
+                            <a class="@(controller == "KetQuaDaoTao" ? "active" : "")" asp-controller="KetQuaDaoTao" asp-action="LichSuDaoTao"><span aria-hidden="true">★</span> Kết quả của tôi</a>
+                        }
+                    }
+                </nav>
+                <div class="sidebar-note"><strong>Học tập suốt đời</strong><p>Mỗi khóa học là một bước tiến trong hành trình phát triển.</p></div>
+            </aside>
+        }
+        <main id="main-content" class="@(loggedIn ? "main-content" : "login-main")">@RenderBody()</main>
+    </div>
+    <footer>© Trường Đại học Kinh tế - Kỹ thuật Công nghiệp (UNETI) - Hệ thống Quản lý Đào tạo Nội bộ</footer>
+    <script src="~/js/sort-menus.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,28 @@
+HƯỚNG DẪN PHÂN TRANG VÀ SẮP XẾP
+
+Các màn hình đã cập nhật:
+- Quản lý tài khoản
+- Quản lý phòng ban
+- Quản lý lĩnh vực đào tạo
+
+PHÂN TRANG
+- Mỗi trang hiển thị tối đa 10 dữ liệu.
+- Bộ lọc được áp dụng trước khi đếm tổng số và phân trang.
+- Các nút Trước/Sau và số trang giữ nguyên từ khóa, trạng thái, vai trò (nếu có) và lựa chọn sắp xếp.
+- Thực hiện tại Controller bằng EF Core: CountAsync(), OrderBy()/OrderByDescending(), Skip() và Take().
+
+SẮP XẾP
+- Nhấn tiêu đề cột để mở menu sắp xếp.
+- Các trường chữ: A → Z, Z → A, ngắn → dài, dài → ngắn.
+- Vai trò tài khoản: A → Z theo tên vai trò, Z → A theo tên vai trò, Admin / Nhân sự trước, Giảng viên trước.
+- Trạng thái tài khoản: A → Z theo nhãn, Z → A theo nhãn, Hoạt động trước, Bị khóa trước.
+- Trạng thái phòng ban/lĩnh vực: A → Z theo nhãn, Z → A theo nhãn, Hoạt động trước, Ngừng hoạt động trước.
+- Sau khi chọn sắp xếp, danh sách quay lại trang 1 và giữ nguyên các bộ lọc hiện có.
+
+CÁCH KIỂM TRA
+1. Mở solution bằng Visual Studio và khôi phục các gói NuGet.
+2. Chạy ứng dụng, đăng nhập tài khoản có quyền Admin / Nhân sự - Đào tạo.
+3. Mở từng màn hình ở trên; thử tìm kiếm, đổi lựa chọn ở menu trên từng tiêu đề cột và chuyển qua lại giữa các trang.
+4. Kiểm tra số dòng: mỗi trang có tối đa 10 bản ghi; trang cuối có thể ít hơn.
+
+Ghi chú: Mã nguồn đã được rà soát tĩnh trong môi trường chỉnh sửa này. Môi trường không cài .NET SDK nên cần thực hiện dotnet build/kiểm thử với cấu hình SQL Server của máy chạy dự án.

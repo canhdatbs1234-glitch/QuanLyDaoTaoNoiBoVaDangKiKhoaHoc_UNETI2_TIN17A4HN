@@ -1,0 +1,146 @@
+@*
+// Họ và tên: Đàm Quang Huy
+// Mã sinh viên: 23103100197
+// Nội dung thực hiện: Module 5 - Lịch sử đào tạo của nhân viên (mục 9.5).
+*@
+@model LichSuDaoTaoViewModel
+@{
+    ViewData["Title"] = "Lịch sử đào tạo";
+}
+
+@if (Model.ChuaCoHoSo)
+{
+    <p class="eyebrow navy">HỒ SƠ CÁ NHÂN</p>
+    <h1>Lịch sử đào tạo</h1>
+    <div class="alert alert-error" role="alert">
+        <strong>Chú ý:</strong> Tài khoản của bạn chưa được liên kết với hồ sơ nhân viên.
+        Vui lòng liên hệ bộ phận <strong>Nhân sự - Đào tạo</strong> để được hỗ trợ.
+    </div>
+    return;
+}
+
+<div class="section-heading">
+    <div>
+        <p class="eyebrow navy">@(Model.QuanLyXem ? "QUẢN LÝ NHÂN SỰ / LỊCH SỬ ĐÀO TẠO" : "HỒ SƠ CÁ NHÂN")</p>
+        <h1>Lịch sử đào tạo: @Model.HoTen</h1>
+        <p class="muted">@Model.TenPhongBan · @Model.Email</p>
+    </div>
+    @if (Model.QuanLyXem)
+    {
+        <a class="secondary-button" asp-controller="NhanVien" asp-action="Details" asp-route-id="@Model.MaNhanVien">← Hồ sơ nhân viên</a>
+    }
+</div>
+
+<partial name="_ThongBao" />
+
+<section class="stat-grid" aria-label="Tổng hợp lịch sử đào tạo">
+    <div class="stat-card"><span>Tổng đăng ký</span><strong>@Model.TongDangKy</strong><small>@Model.SoDaDuyet đã được duyệt</small></div>
+    <div class="stat-card"><span>Hoàn thành</span><strong>@Model.SoHoanThanh</strong><small>kết quả đã xác nhận</small></div>
+    <div class="stat-card"><span>Không hoàn thành</span><strong>@Model.SoKhongHoanThanh</strong><small>kết quả đã xác nhận</small></div>
+    <div class="stat-card"><span>Tỷ lệ tham dự TB</span><strong>@(Model.TyLeThamDuTrungBinh.HasValue ? Model.TyLeThamDuTrungBinh.Value.ToString("0.##") + "%" : "—")</strong><small>trên các lớp đã có kết quả</small></div>
+</section>
+
+<form asp-action="LichSuDaoTao" method="get" class="filter-panel">
+    <input type="hidden" name="MaNhanVien" value="@Model.MaNhanVien" />
+    <div class="filter-grid">
+        <div class="field"><label asp-for="SearchTerm">Tìm kiếm</label><input asp-for="SearchTerm" placeholder="Tên lớp hoặc tên khóa" /></div>
+        <div class="field">
+            <label asp-for="TrangThaiDangKy">Trạng thái đăng ký</label>
+            <select asp-for="TrangThaiDangKy">
+                <option value="">Tất cả</option>
+                @foreach (var option in LichSuDaoTaoViewModel.TrangThaiDangKyOptions)
+                {
+                    <option value="@option.Key">@option.Value</option>
+                }
+            </select>
+        </div>
+        <div class="field">
+            <label asp-for="KetQua">Kết quả</label>
+            <select asp-for="KetQua">
+                <option value="">Tất cả</option>
+                <option value="chua">Chờ kết quả</option>
+                <option value="Dat">Hoàn thành</option>
+                <option value="KhongDat">Không hoàn thành</option>
+            </select>
+        </div>
+    </div>
+    <div class="actions"><button type="submit" class="primary-button">Lọc lịch sử</button><a class="secondary-button" asp-action="LichSuDaoTao" asp-route-maNhanVien="@Model.MaNhanVien">Đặt lại</a></div>
+</form>
+
+<p class="muted">@Model.TotalCount mục · @(Model.TotalPages == 0 ? "Chưa có trang" : $"Trang {Model.PageIndex}/{Model.TotalPages}")</p>
+<div class="table-panel">
+    <table class="data-table">
+        <thead><tr><th>Lớp / Khóa đào tạo</th><th>Thời gian</th><th>Đăng ký</th><th>Tỷ lệ tham dự</th><th>Điểm</th><th>Kết quả</th></tr></thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.TenLop<small>@item.TenKhoa · @item.DiaDiem</small></td>
+                    <td>@item.NgayBatDau.ToString("dd/MM/yyyy")<small>đến @item.NgayKetThuc.ToString("dd/MM/yyyy")</small></td>
+                    <td>
+                        <span class="status-badge @item.TrangThaiDangKyCss">@item.TenTrangThaiDangKy</span>
+                        <small>Đăng ký @item.NgayDangKy.ToString("dd/MM/yyyy")@(item.NgayDuyet.HasValue ? " · duyệt " + item.NgayDuyet.Value.ToString("dd/MM/yyyy") : "")</small>
+                        @if ((item.TrangThaiDangKy is "TuChoi" or "DaHuy") && !string.IsNullOrWhiteSpace(item.GhiChuDangKy))
+                        {
+                            <small class="preserve-lines">Lý do: @item.GhiChuDangKy</small>
+                        }
+                    </td>
+                    <td>
+                        @if (item.HienKetQuaDaLuu)
+                        {
+                            <strong>@(item.TyLeThamDu?.ToString("0.##"))%</strong>
+                        }
+                        else if (item.HienTyLeTamTinh)
+                        {
+                            <strong>@item.TyLeTamTinh.ToString("0.##")%</strong>
+                            <small>@item.SoBuoiCoMat/@item.TongSoBuoiHopLe buổi (tạm tính)</small>
+                        }
+                        else
+                        {
+
+                            <text>—</text>
+                        }
+                    </td>
+                    <td>@(item.HienKetQuaDaLuu && item.DiemDanhGia.HasValue ? item.DiemDanhGia.Value.ToString("0.##") : "—")</td>
+                    <td>
+                        <span class="status-badge @item.KetQuaCss">@item.TenKetQuaHienThi</span>
+                        @if (item.DaXacNhan && item.NgayXacNhan.HasValue)
+                        {
+                            <small>Xác nhận @item.NgayXacNhan.Value.ToString("dd/MM/yyyy")</small>
+                        }
+                    </td>
+                </tr>
+            }
+            @if (Model.Items.Count == 0)
+            {
+                <tr><td colspan="6" class="table-empty">Chưa có lịch sử đào tạo phù hợp.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (Model.TotalPages > 1)
+{
+    <nav class="pagination" aria-label="Phân trang lịch sử đào tạo">
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="LichSuDaoTao" asp-all-route-data="Model.RouteForPage(1)">Đầu</a><a asp-action="LichSuDaoTao" asp-all-route-data="Model.RouteForPage(Model.PageIndex - 1)">← Trước</a>
+        }
+        @for (var page = Math.Max(1, Model.PageIndex - 2); page <= Math.Min(Model.TotalPages, Model.PageIndex + 2); page++)
+        {
+            if (page == Model.PageIndex)
+            {
+                <span class="current" aria-current="page">@(page)</span>
+            }
+            else
+            {
+
+                <a asp-action="LichSuDaoTao" asp-all-route-data="Model.RouteForPage(page)">@(page)</a>
+            }
+        }
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="LichSuDaoTao" asp-all-route-data="Model.RouteForPage(Model.PageIndex + 1)">Sau →</a><a asp-action="LichSuDaoTao" asp-all-route-data="Model.RouteForPage(Model.TotalPages)">Cuối</a>
+        }
+    </nav>
+}

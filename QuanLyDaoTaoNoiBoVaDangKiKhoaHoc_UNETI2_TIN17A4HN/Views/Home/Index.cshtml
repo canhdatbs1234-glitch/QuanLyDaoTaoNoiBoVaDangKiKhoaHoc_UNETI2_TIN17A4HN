@@ -1,0 +1,40 @@
+@functions { public string TenVaiTro(string? role) => role switch { "QuanTri" => "Admin / Nhân sự - Đào tạo", "GiangVien" => "Giảng viên", "NhanVien" => "Nhân viên", _ => "Không xác định" }; }
+@*
+//Họ và tên: Nguyễn Cảnh Đạt
+//Mã sinh viên: 23103100224
+//Module 1: Tài khoản – Đăng nhập – Phân quyền – Phòng ban – Lĩnh vực đào tạo.
+*@
+@{
+    ViewData["Title"] = "Trang chủ";
+    var role = Context.Session.GetVaiTro();
+    var management = role == "QuanTri";
+}
+<p class="eyebrow navy">Xin chào</p>
+<h1>@Context.Session.GetHoTen()</h1>
+<p class="muted">Vai trò: <strong>@TenVaiTro(role)</strong></p>
+<partial name="_ThongBao" />
+
+@if (management)
+{
+    <section class="stat-grid" aria-label="Thống kê nhanh">
+        <div class="stat-card"><span>Tài khoản</span><strong>@ViewData["SoTaiKhoan"]</strong><small>@ViewData["SoTaiKhoanKhoa"] đang bị khóa</small></div>
+        <div class="stat-card"><span>Phòng ban hoạt động</span><strong>@ViewData["SoPhongBan"]</strong></div>
+        <div class="stat-card"><span>Lĩnh vực hoạt động</span><strong>@ViewData["SoLinhVuc"]</strong></div>
+        <div class="stat-card"><span>Khóa đào tạo</span><strong>@ViewData["SoKhoa"]</strong></div>
+        <div class="stat-card"><span>Lớp đào tạo</span><strong>@ViewData["SoLop"]</strong></div>
+    </section>
+    <section class="card-grid">
+        <a class="link-card" asp-controller="TaiKhoan" asp-action="Index"><h2>Tài khoản</h2><p>Thêm, sửa, khóa/mở khóa tài khoản và phân vai trò.</p></a>
+        <a class="link-card" asp-controller="PhongBan" asp-action="Index"><h2>Phòng ban</h2><p>Quản lý danh mục phòng ban của đơn vị.</p></a>
+        <a class="link-card" asp-controller="LinhVucDaoTao" asp-action="Index"><h2>Lĩnh vực đào tạo</h2><p>Phân loại khóa đào tạo, hỗ trợ tìm kiếm và lọc.</p></a>
+        <a class="link-card" asp-controller="KhoaDaoTao" asp-action="Index"><h2>Khóa đào tạo</h2><p>Quản lý khóa đào tạo: tìm kiếm, lọc theo lĩnh vực, phân trang.</p></a>
+        <a class="link-card" asp-controller="LopDaoTao" asp-action="Index"><h2>Lớp đào tạo</h2><p>Quản lý lớp, số chỗ còn, hạn đăng ký và trạng thái lớp.</p></a>
+    </section>
+}
+else
+{
+    <section class="editor-panel">
+        <h2>Chào mừng đến cổng đào tạo nội bộ</h2>
+        <p>Bạn đã đăng nhập thành công. Các chức năng quản lý dữ liệu chỉ dành cho Admin / Nhân sự - Đào tạo.</p>
+    </section>
+}

@@ -1,0 +1,180 @@
+@*
+//Họ và tên : Phí Bảo Nam - 23103100236
+//Module 3: Quản lý nhân viên – Đăng ký – Duyệt đào tạo.
+//Giao diện Nhập danh sách nhân sự từ file Excel (Upload, Kiểm tra cấu trúc & Xem trước, Xác nhận).
+*@
+@model NhanVienImportPreviewResult
+@{
+    ViewData["Title"] = "Nhập danh sách nhân sự từ Excel";
+}
+
+<div class="section-heading">
+    <div>
+        <p class="eyebrow navy">QUẢN LÝ NHÂN SỰ / IMPORT EXCEL</p>
+        <h1>Nhập danh sách nhân sự từ Excel</h1>
+        <p class="muted">Hỗ trợ nhập hàng loạt hồ sơ nhân viên vào hệ thống theo file mẫu chuẩn định dạng .xlsx.</p>
+    </div>
+    <div class="actions">
+        <a class="secondary-button" asp-action="DownloadTemplate">📄 Tải file Excel mẫu chuẩn</a>
+        <a class="secondary-button" asp-action="Index">← Quay lại danh sách nhân sự</a>
+    </div>
+</div>
+
+<partial name="_ThongBao" />
+
+<div class="editor-panel" style="margin-bottom: 2rem;">
+    <h2 class="filter-title">Bước 1: Chọn file Excel để kiểm tra và xem trước</h2>
+    <form asp-action="UploadExcel" method="post" enctype="multipart/form-data" class="upload-form">
+        <div class="form-grid" style="grid-template-columns: 2fr 1fr;">
+            <div class="field">
+                <label for="excelFile">Chọn file Excel (.xlsx)</label>
+                <input type="file" id="excelFile" name="file" accept=".xlsx" required />
+                <small class="muted">Hệ thống chỉ nhận file .xlsx có cấu trúc các cột đúng theo mẫu chuẩn.</small>
+            </div>
+            <div class="field" style="align-self: flex-end;">
+                <button type="submit" class="primary-button" style="width: 100%;">🔍 Tải lên & Kiểm tra</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@if (Model != null)
+{
+    <div class="preview-section">
+        @if (!Model.IsStructureValid)
+        {
+            <div class="alert alert-error" role="alert" style="margin-bottom: 1.5rem;">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem;">❌ Cấu trúc file Excel không hợp lệ</h3>
+                <p style="margin: 0;">@Model.StructureErrorMessage</p>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                    Vui lòng <a asp-action="DownloadTemplate" style="text-decoration: underline; font-weight: bold;">tải file mẫu chuẩn tại đây</a>,
+                    sao chép dữ liệu vào đúng các cột quy định và thử lại.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="summary-cards" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 180px; padding: 1rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;">
+                    <div style="font-size: 0.85rem; color: #64748b; text-transform: uppercase;">File đang kiểm tra</div>
+                    <div style="font-size: 1.1rem; font-weight: bold; color: #1e293b; margin-top: 0.25rem;">@Model.FileName</div>
+                </div>
+                <div style="flex: 1; min-width: 140px; padding: 1rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;">
+                    <div style="font-size: 0.85rem; color: #64748b; text-transform: uppercase;">Tổng số dòng</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #0f172a; margin-top: 0.25rem;">@Model.TotalRows</div>
+                </div>
+                <div style="flex: 1; min-width: 140px; padding: 1rem; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px;">
+                    <div style="font-size: 0.85rem; color: #047857; text-transform: uppercase;">Hợp lệ (Có thể nhập)</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #065f46; margin-top: 0.25rem;">@Model.ValidCount</div>
+                </div>
+                <div style="flex: 1; min-width: 140px; padding: 1rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px;">
+                    <div style="font-size: 0.85rem; color: #b91c1c; text-transform: uppercase;">Lỗi dữ liệu</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #991b1b; margin-top: 0.25rem;">@Model.ErrorCount</div>
+                </div>
+            </div>
+
+            @if (Model.HasValidRows)
+            {
+                <div style="margin-bottom: 1.5rem; padding: 1.25rem; background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h3 style="margin: 0; color: #166534; font-size: 1.15rem;">Bước 2: Xác nhận nhập dữ liệu</h3>
+                        <p style="margin: 0.25rem 0 0 0; color: #15803d; font-size: 0.95rem;">
+                            Đã sẵn sàng nhập <strong>@Model.ValidCount</strong> hồ sơ hợp lệ vào hệ thống.
+                            @if (Model.ErrorCount > 0)
+                            {
+                                <span>(Có <strong>@Model.ErrorCount</strong> dòng lỗi sẽ được bỏ qua và không lưu).</span>
+                            }
+                        </p>
+                    </div>
+                    <form asp-action="ConfirmImport" method="post" style="margin: 0;">
+                        <input type="hidden" name="sessionToken" value="@Model.SessionToken" />
+                        <button type="submit" class="primary-button" style="background-color: #16a34a; border-color: #16a34a; font-size: 1rem; padding: 0.65rem 1.5rem;"
+                                onclick="return confirm('Bạn có chắc chắn muốn lưu @Model.ValidCount nhân sự hợp lệ vào cơ sở dữ liệu không?');">
+                            ✅ Xác nhận Import (@Model.ValidCount nhân viên)
+                        </button>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-error" role="alert" style="margin-bottom: 1.5rem;">
+                    <strong>Không thể import:</strong> Tất cả các dòng trong file đều có lỗi dữ liệu. Vui lòng sửa lại dữ liệu theo bảng bên dưới rồi tải lại file.
+                </div>
+            }
+
+            <h2 class="filter-title" style="margin-top: 1.5rem;">Bảng xem trước kết quả kiểm tra từng dòng</h2>
+            <div class="table-panel m2-table">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 70px;">Dòng</th>
+                            <th>Họ và tên</th>
+                            <th>Phòng ban</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                            <th>Ngày sinh</th>
+                            <th>Ngày vào làm</th>
+                            <th>Trạng thái</th>
+                            <th style="width: 100px;">Kết quả</th>
+                            <th style="min-width: 200px;">Nguyên nhân / Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model.Rows)
+                        {
+                            <tr style="@(row.IsValid ? "" : "background-color: #fff1f2;")">
+                                <td style="text-align: center; font-weight: bold;">#@row.RowIndex</td>
+                                <td><strong>@row.HoTen</strong></td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(row.TenPhongBan))
+                                    {
+                                        <span>@row.TenPhongBan</span>
+                                        <small class="muted">(Mã: @row.MaPhongBan)</small>
+                                    }
+                                    else
+                                    {
+                                        <span class="muted">Mã: @row.MaPhongBan</span>
+                                    }
+                                </td>
+                                <td>@row.Email</td>
+                                <td>@(row.SoDienThoai ?? "-")</td>
+                                <td>@(row.NgaySinh == default ? "-" : row.NgaySinh.ToString("dd/MM/yyyy"))</td>
+                                <td>@(row.NgayVaoLam == default ? "-" : row.NgayVaoLam.ToString("dd/MM/yyyy"))</td>
+                                <td>
+                                    <span class="status-badge @(row.TrangThai ? "status-on" : "status-off")">
+                                        @row.TenTrangThai
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (row.IsValid)
+                                    {
+                                        <span class="status-badge status-on" style="background: #dcfce7; color: #15803d; border-color: #86efac;">Hợp lệ</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge status-off" style="background: #fee2e2; color: #b91c1c; border-color: #fca5a5;">Lỗi</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (row.IsValid)
+                                    {
+                                        <span style="color: #16a34a;">✓ Dữ liệu hợp lệ, sẵn sàng nhập</span>
+                                    }
+                                    else
+                                    {
+                                        <ul style="margin: 0; padding-left: 1.2rem; color: #dc2626;">
+                                            @foreach (var err in row.Errors)
+                                            {
+                                                <li>@err</li>
+                                            }
+                                        </ul>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+}

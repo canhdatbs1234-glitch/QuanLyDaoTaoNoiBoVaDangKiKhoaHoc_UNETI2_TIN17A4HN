@@ -1,0 +1,164 @@
+@*
+//Họ và tên : Phí Bảo Nam - 23103100236
+//Module 3: Quản lý nhân viên – Đăng ký – Duyệt đào tạo.
+*@
+@model NhanVienViewModel
+
+<div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+<div class="form-grid">
+    <div class="field">
+        <label asp-for="TenDangNhapInput">Tài khoản liên kết (Gõ tên đăng nhập hoặc chọn)</label>
+        <input asp-for="TenDangNhapInput" list="taiKhoanDatalist" id="TenDangNhapInput"
+               placeholder="Gõ tên đăng nhập tài khoản (ví dụ: nhanvien) để tìm..."
+               value="@(string.IsNullOrEmpty(Model.TenDangNhapInput) ? Model.TenDangNhap : Model.TenDangNhapInput)"
+               autocomplete="off" />
+        <datalist id="taiKhoanDatalist">
+            @foreach (var tk in Model.TaiKhoans)
+            {
+                <option value="@tk.Text" data-id="@tk.Value">@tk.Text</option>
+            }
+        </datalist>
+        <input type="hidden" asp-for="MaTaiKhoan" id="MaTaiKhoanHidden" />
+        <small class="muted">
+            @if (Model.MaNhanVien > 0 && !string.IsNullOrEmpty(Model.TenDangNhap))
+            {
+                <span>Đang liên kết: <strong>@Model.TenDangNhap</strong>. Gõ tên tài khoản khác để thay đổi hoặc xóa trắng để hủy liên kết.</span>
+            }
+            else
+            {
+                <span>Gõ tên đăng nhập để liên kết hồ sơ (có thể để trống nếu nhân sự chưa có tài khoản đăng nhập).</span>
+            }
+        </small>
+        <span asp-validation-for="MaTaiKhoan" class="field-error"></span>
+    </div>
+
+    <div class="field">
+        <label asp-for="HoTen"></label>
+        <input asp-for="HoTen" placeholder="Ví dụ: Nguyễn Văn A" />
+        <span asp-validation-for="HoTen" class="field-error"></span>
+    </div>
+
+    <div class="field">
+        <label asp-for="TenPhongBanInput">Phòng ban (Gõ tên phòng ban hoặc mã)</label>
+        <input asp-for="TenPhongBanInput" list="phongBanDatalist" id="TenPhongBanInput"
+               placeholder="Gõ tên phòng ban (ví dụ: Phòng Công nghệ thông tin) hoặc mã..."
+               value="@(string.IsNullOrEmpty(Model.TenPhongBanInput) ? Model.TenPhongBan : Model.TenPhongBanInput)"
+               autocomplete="off" />
+        <datalist id="phongBanDatalist">
+            @foreach (var pb in Model.PhongBans)
+            {
+                <option value="@pb.Text" data-id="@pb.Value">Mã @pb.Value - @pb.Text</option>
+            }
+        </datalist>
+        <input type="hidden" asp-for="MaPhongBan" id="MaPhongBanHidden" />
+        <small class="muted">Gõ trực tiếp tên phòng ban hoặc mã phòng ban vào ô trên, hoặc chọn từ danh sách gợi ý.</small>
+        <span asp-validation-for="MaPhongBan" class="field-error"></span>
+    </div>
+
+    <div class="field">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" type="email" placeholder="Ví dụ: nva@uneti.edu.vn" />
+        <span asp-validation-for="Email" class="field-error"></span>
+    </div>
+
+    <div class="field">
+        <label asp-for="SoDienThoai"></label>
+        <input asp-for="SoDienThoai" placeholder="Ví dụ: 0987654321" />
+        <span asp-validation-for="SoDienThoai" class="field-error"></span>
+    </div>
+
+    <div class="field">
+        <label asp-for="NgaySinh"></label>
+        <input asp-for="NgaySinh" type="date" asp-format="{0:yyyy-MM-dd}" />
+        <span asp-validation-for="NgaySinh" class="field-error"></span>
+    </div>
+
+    <div class="field">
+        <label asp-for="NgayVaoLam"></label>
+        <input asp-for="NgayVaoLam" type="date" asp-format="{0:yyyy-MM-dd}" />
+        <small class="muted">Không sau ngày hôm nay và không trước ngày sinh.</small>
+        <span asp-validation-for="NgayVaoLam" class="field-error"></span>
+    </div>
+
+    <div class="field field-check" style="align-self: center;">
+        <label asp-for="TrangThai">
+            <input asp-for="TrangThai" type="checkbox" />
+            <span>Đang làm việc (đang hoạt động)</span>
+        </label>
+        <span asp-validation-for="TrangThai" class="field-error"></span>
+    </div>
+</div>
+
+<script>
+    (function () {
+        function initDatalistSync() {
+            // Đồng bộ ô gõ phòng ban với input hidden
+            var pbInput = document.getElementById('TenPhongBanInput');
+            var pbHidden = document.getElementById('MaPhongBanHidden');
+            var pbOptions = document.querySelectorAll('#phongBanDatalist option');
+
+            function syncPb() {
+                if (!pbInput || !pbHidden) return;
+                var val = (pbInput.value || '').trim();
+                var found = false;
+                pbOptions.forEach(function (opt) {
+                    var optVal = opt.getAttribute('value') || '';
+                    var optId = opt.getAttribute('data-id') || '';
+                    var optText = opt.textContent || '';
+                    if (val && (val.toLowerCase() === optVal.toLowerCase() || val === optId || optText.toLowerCase().indexOf(val.toLowerCase()) >= 0)) {
+                        pbHidden.value = optId;
+                        found = true;
+                    }
+                });
+                if (!found && /^\d+$/.test(val)) {
+                    pbHidden.value = val;
+                }
+            }
+
+            if (pbInput) {
+                pbInput.addEventListener('input', syncPb);
+                pbInput.addEventListener('change', syncPb);
+                pbInput.addEventListener('blur', syncPb);
+            }
+
+            // Đồng bộ ô gõ tài khoản với input hidden
+            var tkInput = document.getElementById('TenDangNhapInput');
+            var tkHidden = document.getElementById('MaTaiKhoanHidden');
+            var tkOptions = document.querySelectorAll('#taiKhoanDatalist option');
+
+            function syncTk() {
+                if (!tkInput || !tkHidden) return;
+                var val = (tkInput.value || '').trim();
+                if (!val) {
+                    tkHidden.value = '';
+                    return;
+                }
+                var found = false;
+                tkOptions.forEach(function (opt) {
+                    var optVal = opt.getAttribute('value') || '';
+                    var optId = opt.getAttribute('data-id') || '';
+                    if (val && (val.toLowerCase() === optVal.toLowerCase() || optVal.toLowerCase().indexOf(val.toLowerCase()) >= 0)) {
+                        tkHidden.value = optId;
+                        found = true;
+                    }
+                });
+                if (!found && /^\d+$/.test(val)) {
+                    tkHidden.value = val;
+                }
+            }
+
+            if (tkInput) {
+                tkInput.addEventListener('input', syncTk);
+                tkInput.addEventListener('change', syncTk);
+                tkInput.addEventListener('blur', syncTk);
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDatalistSync);
+        } else {
+            initDatalistSync();
+        }
+    })();
+</script>

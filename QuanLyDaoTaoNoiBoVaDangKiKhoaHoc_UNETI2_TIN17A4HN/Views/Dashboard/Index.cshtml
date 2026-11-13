@@ -1,0 +1,75 @@
+@*
+// Họ và tên: Đàm Quang Huy
+// Mã sinh viên: 23103100197
+// Nội dung thực hiện: Module 5 - Dashboard tổng quan đào tạo (mục 9.6).
+*@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard đào tạo";
+}
+<style>
+    .m5-bar { height: 12px; background: #e5e7eb; border-radius: 6px; overflow: hidden; margin-top: 8px; }
+    .m5-bar > span { display: block; height: 100%; background: #1f7a4d; }
+    .m5-section-title { margin: 28px 0 10px; }
+</style>
+
+<div class="section-heading">
+    <div>
+        <p class="eyebrow navy">QUẢN LÝ ĐÀO TẠO</p>
+        <h1>Dashboard đào tạo</h1>
+        <p class="muted">Số liệu tính trực tiếp từ cơ sở dữ liệu · ngày @Model.HomNay.ToString("dd/MM/yyyy").</p>
+    </div><a class="primary-button" asp-action="ThongKe">Xem thống kê chi tiết →</a>
+</div>
+
+<partial name="_ThongBao" />
+
+<h2 class="m5-section-title">Tổng quan</h2>
+<section class="stat-grid" aria-label="Tổng quan">
+    <div class="stat-card"><span>Nhân viên đang hoạt động</span><strong>@Model.SoNhanVienDangHoatDong</strong></div>
+    <div class="stat-card"><span>Khóa đào tạo đang mở</span><strong>@Model.SoKhoaDangMo</strong><small>khóa đang hoạt động</small></div>
+    <div class="stat-card"><span>Lớp đang mở đăng ký</span><strong>@Model.SoLopDangMoDangKy</strong></div>
+    <div class="stat-card"><span>Lớp sắp bắt đầu</span><strong>@Model.SoLopSapBatDau</strong><small>trong @Model.SoNgaySapBatDau ngày tới</small></div>
+</section>
+
+<h2 class="m5-section-title">Đăng ký và lớp học</h2>
+<section class="stat-grid" aria-label="Đăng ký và lớp học">
+    <div class="stat-card"><span>Đăng ký chờ duyệt</span><strong>@Model.SoDangKyChoDuyet</strong><small><a asp-controller="DangKyDaoTao" asp-action="DuyetDangKy">Đi tới duyệt đăng ký</a></small></div>
+    <div class="stat-card"><span>Đăng ký đã duyệt</span><strong>@Model.SoDangKyDaDuyet</strong></div>
+    <div class="stat-card"><span>Lớp đang học</span><strong>@Model.SoLopDangHoc</strong></div>
+    <div class="stat-card"><span>Lớp đã kết thúc</span><strong>@Model.SoLopDaKetThuc</strong></div>
+</section>
+
+<h2 class="m5-section-title">Kết quả đào tạo (đã xác nhận)</h2>
+<section class="stat-grid" aria-label="Kết quả đào tạo">
+    <div class="stat-card"><span>Lượt hoàn thành</span><strong>@Model.SoLuotHoanThanh</strong></div>
+    <div class="stat-card"><span>Lượt không hoàn thành</span><strong>@Model.SoLuotKhongHoanThanh</strong></div>
+    <div class="stat-card"><span>Chờ xác nhận</span><strong>@Model.SoKetQuaChoXacNhan</strong><small><a asp-controller="KetQuaDaoTao" asp-action="Index" asp-route-xacNhan="chua">Xem kết quả</a></small></div>
+    <div class="stat-card">
+        <span>Tỷ lệ hoàn thành chung</span>
+        <strong>@(Model.TyLeHoanThanhChung.HasValue ? Model.TyLeHoanThanhChung.Value.ToString("0.##") + "%" : "—")</strong>
+        <small>@Model.SoLuotHoanThanh / @Model.TongLuotCoKetQua lượt đã xác nhận</small>
+        <div class="m5-bar" role="img" aria-label="Tỷ lệ hoàn thành chung"><span style="width:@Model.TyLeCss%"></span></div>
+    </div>
+</section>
+
+<h2 class="m5-section-title">Lớp sắp bắt đầu</h2>
+<div class="table-panel">
+    <table class="data-table">
+        <thead><tr><th>Lớp / Khóa đào tạo</th><th>Ngày bắt đầu</th><th>Địa điểm</th><th>Chỗ còn / Tối đa</th></tr></thead>
+        <tbody>
+            @foreach (var lop in Model.LopSapBatDau)
+            {
+                <tr>
+                    <td><a asp-controller="LopDaoTao" asp-action="Details" asp-route-id="@lop.MaLop">@lop.TenLop</a><small>@lop.TenKhoa</small></td>
+                    <td>@lop.NgayBatDau.ToString("dd/MM/yyyy")<small>còn @lop.SoNgayConLai ngày</small></td>
+                    <td>@lop.DiaDiem</td>
+                    <td><strong class="@(lop.SoChoCon > 0 ? "seats-available" : "seats-full")">@lop.SoChoCon / @lop.SoLuongToiDa</strong></td>
+                </tr>
+            }
+            @if (Model.LopSapBatDau.Count == 0)
+            {
+                <tr><td colspan="4" class="table-empty">Không có lớp nào bắt đầu trong @Model.SoNgaySapBatDau ngày tới.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
