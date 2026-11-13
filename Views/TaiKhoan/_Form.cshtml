@@ -1,0 +1,29 @@
+@*
+//Họ và tên: Nguyễn Cảnh Đạt
+//Mã sinh viên: 23103100224
+//Module 1: Tài khoản – Đăng nhập – Phân quyền – Phòng ban – Lĩnh vực đào tạo.
+*@
+@model TaiKhoanViewModel
+@{
+    var laSua = Model.MaTaiKhoan > 0;
+    var currentRole = Context.Session.GetString("VaiTro");
+    var dsVaiTro = VaiTroTaiKhoan.TatCa.Where(r => currentRole == VaiTroTaiKhoan.QuanTri || r != VaiTroTaiKhoan.QuanTri);
+}
+<div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+<input type="hidden" asp-for="MaTaiKhoan" />
+<div class="form-grid">
+<div class="field"><label asp-for="TenDangNhap"></label><input asp-for="TenDangNhap" maxlength="50" autocomplete="off" /><span asp-validation-for="TenDangNhap" class="field-error"></span></div>
+<div class="field"><label asp-for="MatKhau"></label><input asp-for="MatKhau" type="password" maxlength="500" autocomplete="new-password" /><span asp-validation-for="MatKhau" class="field-error"></span>
+@if (laSua) { <small class="muted">Để trống nếu không đổi mật khẩu.</small> }</div>
+<div class="field"><label asp-for="HoTen"></label><input asp-for="HoTen" maxlength="100" /><span asp-validation-for="HoTen" class="field-error"></span></div>
+<div class="field"><label asp-for="Email"></label><input asp-for="Email" type="email" maxlength="254" /><span asp-validation-for="Email" class="field-error"></span></div>
+<div class="field"><label asp-for="VaiTro"></label><select asp-for="VaiTro">
+@foreach (var r in dsVaiTro)
+{
+    <option value="@r">@VaiTroTaiKhoan.Ten(r)</option>
+}
+</select><span asp-validation-for="VaiTro" class="field-error"></span></div>
+<div class="field field-check"><label><input asp-for="TrangThai" /> @Html.DisplayNameFor(m => m.TrangThai)</label><span asp-validation-for="TrangThai" class="field-error"></span></div>
+</div>
+<p class="muted">Tên đăng nhập và email không được trùng. Tài khoản bị khóa không thể đăng nhập.</p>
+<div class="actions"><button class="primary-button" type="submit">Lưu tài khoản</button><a class="secondary-button" asp-action="Index">Quay lại</a></div>

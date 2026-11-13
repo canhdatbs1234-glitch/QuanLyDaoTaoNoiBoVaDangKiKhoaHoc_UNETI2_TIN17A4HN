@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="UNETI">
+  <rect width="80" height="80" rx="14" fill="#002B66"/>
+  <rect x="8" y="60" width="64" height="5" rx="2.5" fill="#F2A900"/>
+  <text x="40" y="45" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF" letter-spacing="1">UNETI</text>
+</svg>

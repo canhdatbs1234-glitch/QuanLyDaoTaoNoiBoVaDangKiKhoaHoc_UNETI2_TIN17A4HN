@@ -1,0 +1,34 @@
+@*
+//Họ và tên: Nguyễn Cảnh Đạt
+//Mã sinh viên: 23103100224
+//Module 1: Tài khoản – Đăng nhập – Phân quyền – Phòng ban – Lĩnh vực đào tạo.
+*@
+@model QuanLyDaoTaoNoiBo.Models.Entities.TaiKhoan
+@{
+    ViewData["Title"] = "Chi tiết tài khoản";
+    var laChinhMinh = Context.Session.GetInt32("MaTaiKhoan") == Model.MaTaiKhoan;
+}
+<p class="eyebrow navy">Hệ thống</p><h1>@Model.TenDangNhap</h1>
+<partial name="_ThongBao" />
+<section class="editor-panel"><dl class="detail-grid">
+<dt>Họ tên</dt><dd>@Model.HoTen</dd>
+<dt>Email</dt><dd>@Model.Email</dd>
+<dt>Vai trò</dt><dd>@VaiTroTaiKhoan.Ten(Model.VaiTro)</dd>
+<dt>Trạng thái</dt><dd>@(Model.TrangThai ? "Hoạt động" : "Bị khóa - không thể đăng nhập")</dd>
+<dt>Hồ sơ nhân viên liên kết</dt><dd>@(Model.NhanVien is null ? "Chưa có" : Model.NhanVien.HoTen)</dd>
+</dl>
+<div class="actions">
+    <a class="primary-button" asp-action="Edit" asp-route-id="@Model.MaTaiKhoan">Chỉnh sửa</a>
+    <a class="secondary-button" asp-action="Index">Quay lại</a>
+</div></section>
+<section class="delete-panel"><h2>@(Model.TrangThai ? "Khóa tài khoản" : "Mở khóa tài khoản")</h2>
+<p>Tài khoản không bị xóa để giữ lịch sử đào tạo. Tài khoản bị khóa không thể đăng nhập.</p>
+@if (laChinhMinh)
+{
+    <p class="muted">Bạn không thể tự khóa tài khoản đang đăng nhập.</p>
+}
+else
+{
+    <form asp-action="KhoaMo" asp-route-id="@Model.MaTaiKhoan" method="post"><button class="@(Model.TrangThai ? "danger-button" : "primary-button")" type="submit">@(Model.TrangThai ? "Khóa tài khoản" : "Mở khóa tài khoản")</button></form>
+}
+</section>
