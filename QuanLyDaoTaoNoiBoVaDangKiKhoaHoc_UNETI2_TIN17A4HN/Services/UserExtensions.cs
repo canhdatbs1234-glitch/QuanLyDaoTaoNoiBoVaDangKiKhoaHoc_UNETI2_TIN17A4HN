@@ -9,7 +9,6 @@ public static class UserExtensions
     public static int? GetMaTaiKhoan(this ISession session) => session.GetInt32(KeyMaTaiKhoan);
 
     public static string? GetHoTen(this ISession session) => session.GetString(KeyHoTen);
-
     public static string? GetVaiTro(this ISession session) => session.GetString(KeyVaiTro);
 
     public static int? GetMaNhanVien(this ISession session) => session.GetInt32(KeyMaNhanVien);

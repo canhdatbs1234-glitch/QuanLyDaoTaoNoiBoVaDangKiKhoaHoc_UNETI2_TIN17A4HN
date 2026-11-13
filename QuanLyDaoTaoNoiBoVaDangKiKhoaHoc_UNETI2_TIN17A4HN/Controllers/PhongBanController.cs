@@ -134,7 +134,6 @@ public class PhongBanController(ApplicationDbContext db) : Controller
         }
         return RedirectToAction(nameof(Details), new { id });
     }
-
     private async Task ValidateName(PhongBanViewModel model)
     {
         var ten = model.TenPhongBan?.Trim() ?? "";

@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyDaoTaoNoiBo.Models;
 using QuanLyDaoTaoNoiBo.Models.Entities;
 using QuanLyDaoTaoNoiBo.Services;
-
 namespace QuanLyDaoTaoNoiBo.Data;
 
 public static class DbInitializer

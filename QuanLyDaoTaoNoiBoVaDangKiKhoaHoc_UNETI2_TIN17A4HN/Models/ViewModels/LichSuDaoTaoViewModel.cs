@@ -3,7 +3,6 @@
 // Nội dung thực hiện: Module 5 - ViewModel lịch sử đào tạo của nhân viên (mục 9.5).
 using QuanLyDaoTaoNoiBo.Models.Entities;
 using QuanLyDaoTaoNoiBo.Services;
-
 namespace QuanLyDaoTaoNoiBo.Models.ViewModels;
 
 public class LichSuDongViewModel

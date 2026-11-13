@@ -18,7 +18,6 @@ public class TaiKhoan
 
     [Required, StringLength(254), EmailAddress]
     public string Email { get; set; } = string.Empty;
-
     [Required, StringLength(30)]
     [RegularExpression("^(QuanTri|NhanVien|GiangVien)$")]
     public string VaiTro { get; set; } = "NhanVien";

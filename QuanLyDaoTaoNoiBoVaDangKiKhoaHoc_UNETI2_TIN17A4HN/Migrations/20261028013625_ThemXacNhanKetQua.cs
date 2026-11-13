@@ -8,7 +8,7 @@ namespace QuanLyDaoTaoNoiBo.Migrations
     /// <inheritdoc />
     public partial class ThemXacNhanKetQua : Migration
     {
-        /// <inheritdoc />
+       /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             // ===== Module 5: trường xác nhận kết quả =====

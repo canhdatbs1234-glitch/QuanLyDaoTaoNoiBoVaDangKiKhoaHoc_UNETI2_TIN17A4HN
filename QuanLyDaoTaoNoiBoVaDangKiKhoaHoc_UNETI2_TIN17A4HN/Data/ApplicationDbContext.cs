@@ -9,7 +9,6 @@ public partial class ApplicationDbContext : DbContext
         : base(options)
     {
     }
-
     public DbSet<TaiKhoan> TaiKhoans => Set<TaiKhoan>();
     public DbSet<PhongBan> PhongBans => Set<PhongBan>();
     public DbSet<LinhVucDaoTao> LinhVucDaoTaos => Set<LinhVucDaoTao>();

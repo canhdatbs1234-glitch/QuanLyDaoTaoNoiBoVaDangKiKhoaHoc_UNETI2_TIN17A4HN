@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore.Design;
 using QuanLyDaoTaoNoiBo.Data;
 
 namespace QuanLyDaoTaoNoiBo.Data;
-
 public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
 {
     public ApplicationDbContext CreateDbContext(string[] args)

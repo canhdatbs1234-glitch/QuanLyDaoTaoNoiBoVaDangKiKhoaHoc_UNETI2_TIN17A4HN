@@ -3,7 +3,6 @@
 //Module 1: Tài khoản – Đăng nhập – Phân quyền – Phòng ban – Lĩnh vực đào tạo.
 using System.ComponentModel.DataAnnotations;
 namespace QuanLyDaoTaoNoiBo.Models.Entities;
-
 public class LinhVucDaoTao
 {
     [Key]

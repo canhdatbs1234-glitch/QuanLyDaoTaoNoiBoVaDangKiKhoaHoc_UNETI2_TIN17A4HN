@@ -3,7 +3,6 @@
 // Nội dung thực hiện: Module 5 - ViewModel danh sách kết quả và form đánh giá/xác nhận kết quả đào tạo.
 using Microsoft.AspNetCore.Mvc.Rendering;
 using QuanLyDaoTaoNoiBo.Models.Entities;
-
 namespace QuanLyDaoTaoNoiBo.Models.ViewModels;
 
 /// <summary>Một dòng trong danh sách kết quả (mỗi dòng = một đăng ký đã duyệt).</summary>

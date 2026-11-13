@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace QuanLyDaoTaoNoiBo.Models.ViewModels;
-
 /// <summary>
 /// Model hiển thị thông tin 1 lớp học kèm trạng thái đăng ký của nhân viên hiện tại.
 /// </summary>

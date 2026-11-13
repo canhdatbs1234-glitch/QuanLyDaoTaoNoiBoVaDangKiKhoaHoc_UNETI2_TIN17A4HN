@@ -9,12 +9,11 @@ using QuanLyDaoTaoNoiBo.Models.Entities;
 using QuanLyDaoTaoNoiBo.Models.ViewModels;
 
 namespace QuanLyDaoTaoNoiBo.Services;
-
 public record DiemDanhResult(bool Success, string Message);
 
 public class DiemDanhService(ApplicationDbContext db, TimeProvider clock)
 {
-    public DateTime Now => clock.GetUtcNow().ToOffset(TimeSpan.FromHours(7)).DateTime;
+   public DateTime Now => clock.GetUtcNow().ToOffset(TimeSpan.FromHours(7)).DateTime;
 
     public async Task<DiemDanhViewModel?> Load(int accountId, int lessonId)
     {

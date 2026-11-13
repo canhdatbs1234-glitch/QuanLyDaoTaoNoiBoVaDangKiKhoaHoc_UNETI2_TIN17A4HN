@@ -8,7 +8,6 @@ using QuanLyDaoTaoNoiBo.Models.ViewModels;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-
 namespace QuanLyDaoTaoNoiBo.Services;
 
 public static class Module2ExportService

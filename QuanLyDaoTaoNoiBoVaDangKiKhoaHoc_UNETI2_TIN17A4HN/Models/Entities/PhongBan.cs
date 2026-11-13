@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace QuanLyDaoTaoNoiBo.Models.Entities;
 public class PhongBan
 {
-    [Key]
+   [Key]
     public int MaPhongBan { get; set; }
     [Required, StringLength(100)]
     public string TenPhongBan { get; set; } = string.Empty;

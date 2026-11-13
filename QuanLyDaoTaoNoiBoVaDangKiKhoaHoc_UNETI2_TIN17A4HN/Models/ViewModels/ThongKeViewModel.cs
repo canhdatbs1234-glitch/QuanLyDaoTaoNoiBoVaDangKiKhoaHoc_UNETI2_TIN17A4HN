@@ -2,7 +2,6 @@
 // Mã sinh viên: 23103100197
 // Nội dung thực hiện: Module 5 - ViewModel thống kê LINQ (mục 9.7).
 using System.Globalization;
-
 namespace QuanLyDaoTaoNoiBo.Models.ViewModels;
 
 public class ThongKePhongBanRow

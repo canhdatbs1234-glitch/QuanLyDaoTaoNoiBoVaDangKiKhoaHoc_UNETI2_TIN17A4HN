@@ -74,7 +74,6 @@ public class LinhVucDaoTaoController(ApplicationDbContext db) : Controller
         ViewData["SoLuongLienQuan"] = await db.KhoaDaoTaos.CountAsync(x => x.MaLinhVuc == id);
         return View(entity);
     }
-
     [HttpGet]
     public IActionResult Create() => View(new LinhVucDaoTaoViewModel());
 

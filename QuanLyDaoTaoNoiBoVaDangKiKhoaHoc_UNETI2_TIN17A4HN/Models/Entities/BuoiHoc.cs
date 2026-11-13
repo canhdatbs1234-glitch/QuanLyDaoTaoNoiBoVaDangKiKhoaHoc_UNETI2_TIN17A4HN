@@ -6,7 +6,7 @@ namespace QuanLyDaoTaoNoiBo.Models.Entities;
 public class BuoiHoc : IValidatableObject
 {
     [Key]
-    public int MaBuoiHoc { get; set; }
+   public int MaBuoiHoc { get; set; }
 
     [Required, Range(1, int.MaxValue)]
     public int MaLop { get; set; }

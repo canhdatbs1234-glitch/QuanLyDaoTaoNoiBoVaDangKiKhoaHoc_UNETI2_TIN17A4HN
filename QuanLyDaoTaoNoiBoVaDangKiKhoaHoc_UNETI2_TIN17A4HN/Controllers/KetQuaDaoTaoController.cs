@@ -10,7 +10,6 @@ using QuanLyDaoTaoNoiBo.Data;
 using QuanLyDaoTaoNoiBo.Models.Entities;
 using QuanLyDaoTaoNoiBo.Models.ViewModels;
 using QuanLyDaoTaoNoiBo.Services;
-
 namespace QuanLyDaoTaoNoiBo.Controllers;
 
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]

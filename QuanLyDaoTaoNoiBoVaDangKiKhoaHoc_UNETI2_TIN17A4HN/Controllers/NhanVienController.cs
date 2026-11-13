@@ -8,7 +8,6 @@ using QuanLyDaoTaoNoiBo.Services;
 using Microsoft.AspNetCore.Authorization;
 using QuanLyDaoTaoNoiBo.Models.Entities;
 using QuanLyDaoTaoNoiBo.Models.ViewModels;
-
 namespace QuanLyDaoTaoNoiBo.Controllers;
 
 /// <summary>

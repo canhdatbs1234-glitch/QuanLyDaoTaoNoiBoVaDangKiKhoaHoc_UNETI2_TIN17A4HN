@@ -41,7 +41,6 @@ public class DiemDanhController(ApplicationDbContext db, DiemDanhService service
         TempData[result.Success ? "Success" : "Error"] = result.Message;
         return RedirectToAction(nameof(DiemDanhBuoiHoc), new { id });
     }
-
     [HttpGet]
     public async Task<IActionResult> ThongKeThamGia(int? maLop)
     {

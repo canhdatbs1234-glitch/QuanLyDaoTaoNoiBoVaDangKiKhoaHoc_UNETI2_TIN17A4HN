@@ -8,7 +8,6 @@ using QuanLyDaoTaoNoiBo.Services;
 using QuanLyDaoTaoNoiBo.Models;
 
 namespace QuanLyDaoTaoNoiBo.Controllers;
-
 // Trang chủ sau đăng nhập; mọi vai trò hợp lệ đều truy cập được (FallbackPolicy trong Program.cs đã bắt buộc đăng nhập).
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class HomeController(ApplicationDbContext db) : Controller

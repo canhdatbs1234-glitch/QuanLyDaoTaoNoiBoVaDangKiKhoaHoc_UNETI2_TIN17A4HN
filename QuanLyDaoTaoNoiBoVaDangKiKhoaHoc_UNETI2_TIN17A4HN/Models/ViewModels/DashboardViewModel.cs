@@ -4,7 +4,6 @@
 using System.Globalization;
 
 namespace QuanLyDaoTaoNoiBo.Models.ViewModels;
-
 public class LopSapBatDauViewModel
 {
     public int MaLop { get; set; }

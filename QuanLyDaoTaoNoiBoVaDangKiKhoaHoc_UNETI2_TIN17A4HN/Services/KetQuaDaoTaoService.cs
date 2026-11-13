@@ -8,7 +8,6 @@ using QuanLyDaoTaoNoiBo.Models.Entities;
 namespace QuanLyDaoTaoNoiBo.Services;
 
 public record KetQuaXuLy(bool ThanhCong, string ThongBao);
-
 public class KetQuaDaoTaoService(ApplicationDbContext db)
 {
     private static KetQuaXuLy Ok(string msg) => new(true, msg);

@@ -7,7 +7,7 @@ namespace QuanLyDaoTaoNoiBo.Migrations
     /// <summary>Module 2: bổ sung trạng thái lớp "Chưa mở đăng ký" (ChuaMoDangKy).</summary>
     public partial class ThemTrangThaiChuaMoDangKy : Migration
     {
-        /// <inheritdoc />
+       /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropCheckConstraint(

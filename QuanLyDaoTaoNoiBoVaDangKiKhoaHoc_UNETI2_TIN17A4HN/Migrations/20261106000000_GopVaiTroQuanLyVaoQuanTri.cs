@@ -6,7 +6,7 @@ using QuanLyDaoTaoNoiBo.Data;
 
 namespace QuanLyDaoTaoNoiBo.Migrations
 {
-    /// <summary>Gộp vai trò QuanLy (Nhân sự - Đào tạo) vào QuanTri: còn 3 vai trò QuanTri / NhanVien / GiangVien.</summary>
+   /// <summary>Gộp vai trò QuanLy (Nhân sự - Đào tạo) vào QuanTri: còn 3 vai trò QuanTri / NhanVien / GiangVien.</summary>
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20261106000000_GopVaiTroQuanLyVaoQuanTri")]
     public partial class GopVaiTroQuanLyVaoQuanTri : Migration

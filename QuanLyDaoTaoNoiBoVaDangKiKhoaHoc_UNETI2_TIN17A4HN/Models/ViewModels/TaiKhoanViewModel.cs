@@ -20,7 +20,6 @@ public class TaiKhoanViewModel
     [Required(ErrorMessage = "Vui lòng nhập họ tên."), StringLength(100)]
     [Display(Name = "Họ tên")]
     public string HoTen { get; set; } = "";
-
     [Required(ErrorMessage = "Vui lòng nhập email."), StringLength(254)]
     [EmailAddress(ErrorMessage = "Email không đúng định dạng.")]
     public string Email { get; set; } = "";

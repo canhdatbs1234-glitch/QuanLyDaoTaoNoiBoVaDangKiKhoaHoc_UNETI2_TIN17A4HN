@@ -11,7 +11,6 @@ public class LinhVucDaoTaoViewModel
     [Required(ErrorMessage = "Vui lòng nhập tên lĩnh vực."), StringLength(150, ErrorMessage = "Tên lĩnh vực tối đa 150 ký tự.")]
     [Display(Name = "Tên lĩnh vực")]
     public string TenLinhVuc { get; set; } = "";
-
     [StringLength(1000, ErrorMessage = "Mô tả tối đa 1000 ký tự.")]
     [Display(Name = "Mô tả")]
     public string? MoTa { get; set; }

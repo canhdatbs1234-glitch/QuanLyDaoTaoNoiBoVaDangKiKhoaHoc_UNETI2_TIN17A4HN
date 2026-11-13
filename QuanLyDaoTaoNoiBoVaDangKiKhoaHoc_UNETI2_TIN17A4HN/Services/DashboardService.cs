@@ -7,7 +7,6 @@ using QuanLyDaoTaoNoiBo.Models.Entities;
 using QuanLyDaoTaoNoiBo.Models.ViewModels;
 
 namespace QuanLyDaoTaoNoiBo.Services;
-
 public class DashboardService(ApplicationDbContext db, KetQuaDaoTaoService ketQuaService)
 {
     /// <summary>Lớp "sắp bắt đầu" = bắt đầu trong vòng bao nhiêu ngày tới.</summary>

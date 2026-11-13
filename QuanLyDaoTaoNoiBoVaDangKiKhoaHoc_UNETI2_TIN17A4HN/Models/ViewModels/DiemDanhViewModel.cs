@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace QuanLyDaoTaoNoiBo.Models.ViewModels;
-
 public class DiemDanhViewModel
 {
     [Range(1, int.MaxValue)]
