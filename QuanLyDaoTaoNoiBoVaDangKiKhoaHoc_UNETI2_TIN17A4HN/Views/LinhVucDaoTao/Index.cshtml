@@ -1,0 +1,72 @@
+@* Module 1: Danh mục lĩnh vực. *@
+@model IReadOnlyList<QuanLyDaoTaoNoiBo.Models.Entities.LinhVucDaoTao>
+@{
+    ViewData["Title"] = "Quản lý lĩnh vực đào tạo";
+    var tuKhoaLoc = (string?)ViewData["TuKhoa"];
+    var trangThaiLoc = (string?)ViewData["TrangThai"];
+}
+<div class="section-heading"><div><p class="eyebrow navy">Danh mục</p><h1>Quản lý lĩnh vực đào tạo</h1><p class="muted">@ViewData["TotalCount"] lĩnh vực</p></div><a class="primary-button" asp-action="Create">+ Thêm lĩnh vực đào tạo</a></div>
+<partial name="_ThongBao" />
+<form asp-action="Index" method="get" class="filter-panel"><div class="filter-grid">
+    <div class="field"><label for="tuKhoa">Từ khóa</label><input id="tuKhoa" name="tuKhoa" value="@tuKhoaLoc" placeholder="Tên hoặc mô tả" /></div>
+    <div class="field"><label for="trangThai">Trạng thái</label><select id="trangThai" name="trangThai"><option value="">Tất cả</option><option value="hoatdong" selected="@(trangThaiLoc == "hoatdong")">Hoạt động</option><option value="ngung" selected="@(trangThaiLoc == "ngung")">Ngừng hoạt động</option></select></div>
+    <input type="hidden" name="sort" value="@ViewData["Sort"]" />
+</div><div class="actions"><button class="primary-button" type="submit">Tìm kiếm</button><a class="secondary-button" asp-action="Index">Xóa lọc</a></div></form>
+<div class="table-panel"><table class="data-table"><thead><tr>
+<th><button type="button" class="sort-trigger" popovertarget="sort-name-linhvuc">Tên lĩnh vực <span aria-hidden="true">↕</span></button>
+<div id="sort-name-linhvuc" class="sort-popover" popover="auto" role="menu">
+    <a role="menuitem" asp-action="Index" asp-route-tuKhoa="@tuKhoaLoc" asp-route-trangThai="@trangThaiLoc" asp-route-sort="tenLinhVuc_az" asp-route-page="1">A → Z</a>
+    <a role="menuitem" asp-action="Index" asp-route-tuKhoa="@tuKhoaLoc" asp-route-trangThai="@trangThaiLoc" asp-route-sort="tenLinhVuc_za" asp-route-page="1">Z → A</a>
+    <a role="menuitem" asp-action="Index" asp-route-tuKhoa="@tuKhoaLoc" asp-route-trangThai="@trangThaiLoc" asp-route-sort="tenLinhVuc_short" asp-route-page="1">Tên ngắn trước</a>
+    <a role="menuitem" asp-action="Index" asp-route-tuKhoa="@tuKhoaLoc" asp-route-trangThai="@trangThaiLoc" asp-route-sort="tenLinhVuc_long" asp-route-page="1">Tên dài trước</a>
+</div></th>
+<th><button type="button" class="sort-trigger" popovertarget="sort-description-linhvuc">Mô tả <span aria-hidden="true">↕</span></button>
+<div id="sort-description-linhvuc" class="sort-popover" popover="auto" role="menu">
+    <a role="menuitem" asp-action="Index" asp-route-tuKhoa="@tuKhoaLoc" asp-route-trangThai="@trangThaiLoc" asp-route-sort="moTa_az" asp-route-page="1">A → Z</a>
+    <a role="menuitem" asp-action="Index" asp-route-tuKhoa="@tuKhoaLoc" asp-route-trangThai="@trangThaiLoc" asp-route-sort="moTa_za" asp-route-page="1">Z → A</a>
+    <a role="menuitem" asp-action="Index" asp-route-tuKhoa="@tuKhoaLoc" asp-route-trangThai="@trangThaiLoc" asp-route-sort="moTa_short" asp-route-page="1">Mô tả ngắn trước</a>
+    <a role="menuitem" asp-action="Index" asp-route-tuKhoa="@tuKhoaLoc" asp-route-trangThai="@trangThaiLoc" asp-route-sort="moTa_long" asp-route-page="1">Mô tả dài trước</a>
+</div></th>
+<th><button type="button" class="sort-trigger" popovertarget="sort-status-linhvuc">Trạng thái <span aria-hidden="true">↕</span></button>
+<div id="sort-status-linhvuc" class="sort-popover" popover="auto" role="menu">
+    <a role="menuitem" asp-action="Index" asp-route-tuKhoa="@tuKhoaLoc" asp-route-trangThai="@trangThaiLoc" asp-route-sort="trangThai_az" asp-route-page="1">A → Z theo nhãn</a>
+    <a role="menuitem" asp-action="Index" asp-route-tuKhoa="@tuKhoaLoc" asp-route-trangThai="@trangThaiLoc" asp-route-sort="trangThai_za" asp-route-page="1">Z → A theo nhãn</a>
+    <a role="menuitem" asp-action="Index" asp-route-tuKhoa="@tuKhoaLoc" asp-route-trangThai="@trangThaiLoc" asp-route-sort="trangThai_hoatDongFirst" asp-route-page="1">Hoạt động trước</a>
+    <a role="menuitem" asp-action="Index" asp-route-tuKhoa="@tuKhoaLoc" asp-route-trangThai="@trangThaiLoc" asp-route-sort="trangThai_ngungFirst" asp-route-page="1">Ngừng hoạt động trước</a>
+</div></th>
+<th>Thao tác</th></tr></thead><tbody>
+@foreach (var item in Model)
+{
+    <tr><td><a asp-action="Details" asp-route-id="@item.MaLinhVuc">@item.TenLinhVuc</a></td><td>@item.MoTa</td><td><span class="status-badge @(item.TrangThai ? "status-on" : "status-off")">@(item.TrangThai ? "Hoạt động" : "Ngừng hoạt động")</span></td><td class="row-actions"><a asp-action="Edit" asp-route-id="@item.MaLinhVuc">Sửa</a><a asp-action="Details" asp-route-id="@item.MaLinhVuc">Chi tiết / Xóa</a></td></tr>
+}
+@if (Model.Count == 0) { <tr><td colspan="4" class="table-empty">Không có lĩnh vực phù hợp.</td></tr> }
+</tbody></table></div>
+@{
+    var currentPage = (int)(ViewData["Page"] ?? 1);
+    var totalPages = (int)(ViewData["TotalPages"] ?? 1);
+    var totalCount = (int)(ViewData["TotalCount"] ?? 0);
+    var startRecord = totalCount == 0 ? 0 : (currentPage - 1) * 10 + 1;
+    var endRecord = Math.Min(currentPage * 10, totalCount);
+    var startPage = Math.Max(1, currentPage - 2);
+    var endPage = Math.Min(totalPages, currentPage + 2);
+}
+<div class="pagination-summary">Hiển thị <strong>@startRecord–@endRecord</strong> trên <strong>@totalCount</strong> dữ liệu · 10 dữ liệu/trang</div>
+<nav class="pagination" aria-label="Phân trang">
+    @if (currentPage > 1)
+    {
+        <a asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-sort="@ViewData["Sort"]" asp-route-tuKhoa="@ViewData["TuKhoa"]" asp-route-trangThai="@ViewData["TrangThai"]">‹ Trước</a>
+    }
+    else { <span class="page-disabled">‹ Trước</span> }
+    @if (startPage > 1) { <a asp-action="Index" asp-route-page="1" asp-route-sort="@ViewData["Sort"]" asp-route-tuKhoa="@ViewData["TuKhoa"]" asp-route-trangThai="@ViewData["TrangThai"]">1</a><span class="page-ellipsis">…</span> }
+    @for (var p = startPage; p <= endPage; p++)
+    {
+        if (p == currentPage) { <span class="current" aria-current="page">@p</span> }
+        else { <a asp-action="Index" asp-route-page="@p" asp-route-sort="@ViewData["Sort"]" asp-route-tuKhoa="@ViewData["TuKhoa"]" asp-route-trangThai="@ViewData["TrangThai"]">@p</a> }
+    }
+    @if (endPage < totalPages) { <span class="page-ellipsis">…</span><a asp-action="Index" asp-route-page="@totalPages" asp-route-sort="@ViewData["Sort"]" asp-route-tuKhoa="@ViewData["TuKhoa"]" asp-route-trangThai="@ViewData["TrangThai"]">@totalPages</a> }
+    @if (currentPage < totalPages)
+    {
+        <a asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-sort="@ViewData["Sort"]" asp-route-tuKhoa="@ViewData["TuKhoa"]" asp-route-trangThai="@ViewData["TrangThai"]">Sau ›</a>
+    }
+    else { <span class="page-disabled">Sau ›</span> }
+</nav>
