@@ -51,6 +51,7 @@ public class TaiKhoanController(ApplicationDbContext db) : Controller
 
         return RedirectToAction("Index", "Home");
     }
+
     [AllowAnonymous, HttpPost, ValidateAntiForgeryToken]
     public IActionResult DangXuat()
     {

@@ -4,6 +4,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace QuanLyDaoTaoNoiBo.Models.ViewModels;
+
 public class BaoCaoThamGiaViewModel
 {
     public int? MaLop { get; set; }

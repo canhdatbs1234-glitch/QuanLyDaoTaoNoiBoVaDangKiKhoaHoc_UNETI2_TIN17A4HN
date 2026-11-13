@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuanLyDaoTaoNoiBo.Models.Entities;
+
 /// <summary>
 /// Entity DangKyDaoTao (Mục 7.2)
 /// Quản lý thông tin đăng ký đào tạo của nhân viên:

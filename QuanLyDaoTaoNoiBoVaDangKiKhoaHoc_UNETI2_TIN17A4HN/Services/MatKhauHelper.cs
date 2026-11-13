@@ -8,6 +8,7 @@ namespace QuanLyDaoTaoNoiBo.Services;
 public static class MatKhauHelper
 {
     private static readonly PasswordHasher<TaiKhoan> Hasher = new();
+
     public static string Bam(TaiKhoan taiKhoan, string matKhau) => Hasher.HashPassword(taiKhoan, matKhau);
     private static bool DaBam(string giaTri) =>
         giaTri.Length > 40 && giaTri.StartsWith("AQAAAA", StringComparison.Ordinal);

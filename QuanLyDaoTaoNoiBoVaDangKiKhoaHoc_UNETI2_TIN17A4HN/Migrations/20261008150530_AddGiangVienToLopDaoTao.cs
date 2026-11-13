@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace QuanLyDaoTaoNoiBo.Migrations
 {
     /// <inheritdoc />
-   public partial class AddGiangVienToLopDaoTao : Migration
+    public partial class AddGiangVienToLopDaoTao : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

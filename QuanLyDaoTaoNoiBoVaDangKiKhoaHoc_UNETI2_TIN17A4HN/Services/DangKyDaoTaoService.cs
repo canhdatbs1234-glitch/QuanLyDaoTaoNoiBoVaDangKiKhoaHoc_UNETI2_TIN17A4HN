@@ -9,7 +9,7 @@ namespace QuanLyDaoTaoNoiBo.Services;
 
 /// <summary>
 /// Service xử lý toàn bộ nghiệp vụ Đăng ký, Duyệt, Từ chối và Hủy đào tạo của Module 3.
-/// Sử dụng transaction Serializable trên SQL Server để đảm bảo an toàn tuyệt đối khi nhiều thao tác diễn ra đồng thời. /// </summary>
+/// Sử dụng transaction Serializable trên SQL Server để đảm bảo an toàn tuyệt đối khi nhiều thao tác diễn ra đồng thời./// </summary>
 public class DangKyDaoTaoService(ApplicationDbContext db)
 {
     /// <summary>

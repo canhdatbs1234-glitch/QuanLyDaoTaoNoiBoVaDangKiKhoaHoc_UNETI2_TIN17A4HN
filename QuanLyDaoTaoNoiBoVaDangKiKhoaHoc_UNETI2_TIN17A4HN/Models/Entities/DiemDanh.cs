@@ -7,6 +7,7 @@ public class DiemDanh
 {
     [Key]
     public int MaDiemDanh { get; set; }
+
     [Required, Range(1, int.MaxValue)]
     public int MaBuoiHoc { get; set; }
 

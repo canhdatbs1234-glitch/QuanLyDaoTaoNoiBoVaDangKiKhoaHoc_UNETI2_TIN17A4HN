@@ -2,6 +2,7 @@
 //Mã sinh viên: 23103100224
 //Module 1: Tài khoản – Đăng nhập – Phân quyền – Phòng ban – Lĩnh vực đào tạo.
 using System.ComponentModel.DataAnnotations;
+
 namespace QuanLyDaoTaoNoiBo.Models.ViewModels;
 
 public class PhongBanViewModel

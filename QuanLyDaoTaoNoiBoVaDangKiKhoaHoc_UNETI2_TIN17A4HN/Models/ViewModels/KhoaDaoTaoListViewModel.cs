@@ -5,6 +5,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using QuanLyDaoTaoNoiBo.Models.Entities;
 namespace QuanLyDaoTaoNoiBo.Models.ViewModels;
+
 public class KhoaDaoTaoListViewModel
 {
     public IReadOnlyList<KhoaDaoTao> Khoas { get; set; } = [];

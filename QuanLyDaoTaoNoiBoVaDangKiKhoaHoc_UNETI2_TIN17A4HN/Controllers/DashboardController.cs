@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuanLyDaoTaoNoiBo.Services;
 
 namespace QuanLyDaoTaoNoiBo.Controllers;
+
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class DashboardController(DashboardService service) : Controller
 {

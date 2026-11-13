@@ -31,6 +31,7 @@ public static class LopDaoTaoRules
             return "Lớp đã hết chỗ.";
         return null;
     }
+
     /// <summary>
     /// Sửa dữ liệu cũ bị sai logic: lớp có số đăng ký đã duyệt LỚN HƠN số lượng tối đa (số chỗ còn âm).
     /// Nâng SoLuongToiDa lên bằng đúng số đã duyệt để SoChoCon = 0 (hết chỗ) thay vì âm.

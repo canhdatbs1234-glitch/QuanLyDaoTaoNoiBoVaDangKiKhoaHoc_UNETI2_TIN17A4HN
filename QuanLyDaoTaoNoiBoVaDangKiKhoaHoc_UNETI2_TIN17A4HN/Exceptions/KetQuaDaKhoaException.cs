@@ -2,7 +2,7 @@ using System;
 
 namespace QuanLyDaoTaoNoiBo
 {
-   // Exception thrown when a result has been locked and the operation is not allowed.
+    // Exception thrown when a result has been locked and the operation is not allowed.
     public class KetQuaDaKhoaException : Exception
     {
         public KetQuaDaKhoaException() { }

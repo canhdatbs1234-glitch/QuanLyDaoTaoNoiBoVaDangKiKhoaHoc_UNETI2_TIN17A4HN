@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuanLyDaoTaoNoiBo.Data;
 
 #nullable disable
+
 namespace QuanLyDaoTaoNoiBo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]

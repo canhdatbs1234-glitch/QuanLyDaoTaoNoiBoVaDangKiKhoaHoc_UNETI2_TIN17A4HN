@@ -4,6 +4,7 @@
 
 using Microsoft.AspNetCore.Mvc.Rendering;
 namespace QuanLyDaoTaoNoiBo.Models.ViewModels;
+
 public class LopDaoTaoListViewModel
 {
     public IReadOnlyList<LopDaoTaoViewModel> Lops { get; set; } = [];

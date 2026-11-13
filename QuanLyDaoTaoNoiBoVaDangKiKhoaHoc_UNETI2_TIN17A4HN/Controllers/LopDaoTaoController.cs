@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using QuanLyDaoTaoNoiBo.Models.Entities;
 using QuanLyDaoTaoNoiBo.Models.ViewModels;
 using QuanLyDaoTaoNoiBo.Services;
+
 namespace QuanLyDaoTaoNoiBo.Controllers;
 
 [SessionAuthorize(Roles = "QuanTri")]

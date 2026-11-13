@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using QuanLyDaoTaoNoiBo.Models.Entities;
+
 namespace QuanLyDaoTaoNoiBo.Models.ViewModels;
 
 /// <summary>

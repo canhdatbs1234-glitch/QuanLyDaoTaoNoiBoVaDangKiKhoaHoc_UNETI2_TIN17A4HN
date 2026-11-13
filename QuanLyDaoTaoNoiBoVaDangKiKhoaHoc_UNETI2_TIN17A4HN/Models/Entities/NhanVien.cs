@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuanLyDaoTaoNoiBo.Models.Entities;
+
 /// <summary>
 /// Entity NhanVien (Mục 7.1)
 /// Quản lý hồ sơ nhân viên trong hệ thống:
